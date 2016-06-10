@@ -31,6 +31,16 @@ def do_transform_html():
     transformed_data = requests.post(transform_url, json=stored_json)
     return(transformed_data.text)
 
+@app.route('/idbr', methods=['GET'])
+def do_transform_idbr():
+    store_url = app.config['SDX_STORE_URL'] + "/response?surveyId=023"
+    result = requests.get(store_url).json()
+    stored_json = result['results'][0]['surveyResponse']
+
+    transform_url = app.config['SDX_TRANSFORM_CS_URL'] + "/idbr"
+    transformed_data = requests.post(transform_url, json=stored_json)
+    return(transformed_data.text)
+
 if __name__ == '__main__':
     # Startup
     logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
