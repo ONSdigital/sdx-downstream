@@ -1,6 +1,6 @@
 # sdx-downstream
 
-The sde-downstream app is used within the Office National of Statistics (ONS) for consuming decrypted Survey Data Exchange (SDX) Surveys from sdx-store and delivering them to downstream environments e.g. Common Software.
+The sdx-downstream app is used within the Office National of Statistics (ONS) for consuming decrypted Survey Data Exchange (SDX) Surveys from sdx-store and delivering them to downstream environments e.g. Common Software.
 
 ## Installation
 
@@ -12,17 +12,26 @@ It's also possible to install within a container using docker. From the sdx-down
 
     $ docker build -t sdx-downstream .
 
+## Configuration
+
+The following envioronment variables can be set:
+
+`SDX_STORE_URL` - The URL of the sdx-store service, defaults to http://localhost:8080
+
+`SDX_TRANSFORM_CS_URL` - The URL of the sdx-transform-cs service, defaults to http://localhost:5000
+
 ## Usage
 
 Start sdx-downstream service using the following command:
 
     python server.py
 
-sdx-downstream exposes a single endpoint - /pck - for transforming to the pck format and by default binds to port 5000 on localhost. It returns a response formatted in the type requested.
+sdx-downstream exposes a single endpoint - /pck - for transforming to the pck format and by default binds to port 5001 on localhost. It returns a response formatted in the type requested.
 
 ### Example
-
-curl http://localhost:5000/pck
+```
+curl http://localhost:5001/pck
+```
 ```
 FBFV03000112/03/16
 FV
