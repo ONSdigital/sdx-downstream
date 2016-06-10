@@ -3,17 +3,14 @@ import json
 import logging
 import logging.handlers
 import requests
-from jinja2 import Environment, PackageLoader
 from flask import Flask, request, Response
-
-env = Environment(loader=PackageLoader('templates'))
 
 app = Flask(__name__)
 
 app.config['SDX_STORE_URL'] = settings.SDX_STORE_URL
 app.config['SDX_TRANSFORM_CS_URL'] = settings.SDX_TRANSFORM_CS_URL
 
-@app.route('/do-transform', methods=['GET'])
+@app.route('/pck', methods=['GET'])
 def do_transform():
     store_url = app.config['SDX_STORE_URL'] + "/response?surveyId=023"
     result = requests.get(store_url).json()
