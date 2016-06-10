@@ -19,10 +19,7 @@ def do_transform_pck():
 
     transform_url = app.config['SDX_TRANSFORM_CS_URL'] + "/pck"
     transformed_data = requests.post(transform_url, json=stored_json)
-    response = Response(response=transformed_data,
-        status=200, \
-        mimetype="application/json")
-    return(response)
+    return(transformed_data.text)
 
 @app.route('/html', methods=['GET'])
 def do_transform_html():
