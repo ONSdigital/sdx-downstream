@@ -9,4 +9,4 @@ LOGGING_LEVEL = logging.DEBUG
 
 # Default to true, cast to boolean
 SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://localhost:8080")
-SDX_TRANSFORM_CS_URL = os.getenv("SDX_TRANSFORM_CS_URL", "http://localhost:5001")
+SDX_TRANSFORM_CS_URL = os.getenv("SDX_TRANSFORM_CS_URL", "http://localhost:5000")
