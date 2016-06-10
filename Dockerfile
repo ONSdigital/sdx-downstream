@@ -9,7 +9,7 @@ RUN mkdir -p /app/logs
 # set working directory to /app/
 WORKDIR /app/
 
-EXPOSE 5000
+EXPOSE 5001
 
 RUN pip3 install --no-cache-dir -U -I -r /app/requirements.txt
 
