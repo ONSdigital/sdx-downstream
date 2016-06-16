@@ -11,8 +11,11 @@ logging.debug("Starting survey-notification consumer..")
 
 def get_survey_from_store(mongoid):
     store_url = settings.SDX_STORE_URL + "/responses/" + mongoid
-    result = requests.get(store_url).text
-    logging.debug(result)
+    result = requests.get(store_url).json()
+    stored_json = result['survey_response']
+    transform_url = settings.SDX_TRANSFORM_CS_URL + "/pck"
+    transformed_data = requests.post(transform_url, json=stored_json)
+    logging.debug(transformed_data.text)
 
 def on_message(channel, method_frame, header_frame, body):
     logging.debug( method_frame.delivery_tag )
