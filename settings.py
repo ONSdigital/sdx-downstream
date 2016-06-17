@@ -18,7 +18,7 @@ FTP_HOST = os.getenv('FTP_HOST', 'pure-ftpd')
 FTP_USER = os.getenv('FTP_USER')
 FTP_PASS = os.getenv('FTP_PASS')
 
-RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'survey-notifications')
+RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'sdx-survey-notifications')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
