@@ -1,5 +1,4 @@
 import pika
-import os
 import io
 import logging
 import sys
@@ -12,18 +11,22 @@ logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=sett
 
 logging.debug("Starting survey-notification consumer..")
 
+
 def connect_to_ftp():
     ftp = FTP(settings.FTP_HOST)
     ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASS)
     return ftp
 
+
 def deliver_ascii_to_ftp(ftp, filename, data):
     stream = io.StringIO(data)
     ftp.storlines('STOR ' + filename, stream)
 
+
 def deliver_binary_to_ftp(ftp, filename, data):
     stream = io.BytesIO(data)
     ftp.storbinary('STOR ' + filename, stream)
+
 
 def get_survey_from_store(mongoid):
     store_url = settings.SDX_STORE_URL + "/responses/" + mongoid
@@ -35,7 +38,7 @@ def get_survey_from_store(mongoid):
     zip_contents = transformed_data.content
 
     try:
-        z=zipfile.ZipFile(io.BytesIO(zip_contents))
+        z = zipfile.ZipFile(io.BytesIO(zip_contents))
         logging.debug("Zip contents:")
         logging.debug(z.namelist())
         ftp = connect_to_ftp()
@@ -50,6 +53,7 @@ def get_survey_from_store(mongoid):
     except (RuntimeError, zipfile.BadZipfile):
         logging.debug("Bad zip file!")
         # TODO: Need to deal with exception
+
 
 def on_message(channel, method_frame, header_frame, body):
     logging.debug( method_frame.delivery_tag )
