@@ -56,15 +56,18 @@ def get_survey_from_store(mongoid):
 
 
 def on_message(channel, method_frame, header_frame, body):
-    logging.debug( method_frame.delivery_tag )
+    logging.debug(method_frame.delivery_tag)
     get_survey_from_store(body.decode("utf-8"))
     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
 connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
 channel = connection.channel()
+channel.queue_declare(queue=settings.RABBIT_QUEUE)
 channel.basic_consume(on_message, settings.RABBIT_QUEUE)
+
 try:
     channel.start_consuming()
 except KeyboardInterrupt:
     channel.stop_consuming()
+
 connection.close()
