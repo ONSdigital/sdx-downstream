@@ -1,15 +1,14 @@
 import settings
-import json
-import html
 import logging
 import logging.handlers
 import requests
-from flask import Flask, request, Response
+from flask import Flask
 
 app = Flask(__name__)
 
 app.config['SDX_STORE_URL'] = settings.SDX_STORE_URL
 app.config['SDX_TRANSFORM_CS_URL'] = settings.SDX_TRANSFORM_CS_URL
+
 
 @app.route('/pck', methods=['GET'])
 def do_transform_pck():
@@ -21,6 +20,7 @@ def do_transform_pck():
     transformed_data = requests.post(transform_url, json=stored_json)
     return(transformed_data.text)
 
+
 @app.route('/html', methods=['GET'])
 def do_transform_html():
     store_url = app.config['SDX_STORE_URL'] + "/response?surveyId=023"
@@ -30,6 +30,7 @@ def do_transform_html():
     transform_url = app.config['SDX_TRANSFORM_CS_URL'] + "/html"
     transformed_data = requests.post(transform_url, json=stored_json)
     return(transformed_data.text)
+
 
 @app.route('/idbr', methods=['GET'])
 def do_transform_idbr():
