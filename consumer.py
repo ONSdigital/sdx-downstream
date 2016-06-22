@@ -9,7 +9,7 @@ from ftplib import FTP
 
 logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
-logging.debug("Starting survey-notification consumer..")
+logging.debug("sdx-downstream|START")
 
 
 def connect_to_ftp():
@@ -33,7 +33,11 @@ def get_survey_from_store(mongoid):
     result = requests.get(store_url).json()
     stored_json = result['survey_response']
 
-    transform_url = settings.SDX_TRANSFORM_CS_URL + "/common-software"
+    sequence_url = settings.SDX_SEQUENCE_URL + "/sequence"
+    result = requests.get(sequence_url).json()
+    sequence_no = result['sequence_no']
+
+    transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
     transformed_data = requests.post(transform_url, json=stored_json)
     zip_contents = transformed_data.content
 
