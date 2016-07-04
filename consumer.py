@@ -43,11 +43,11 @@ def get_survey_from_store(mongoid):
         transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
 
     transformed_data = requests.post(transform_url, json=stored_json)
-    logging.debug(transformed_data)
     zip_contents = transformed_data.content
 
     try:
         z = zipfile.ZipFile(io.BytesIO(zip_contents))
+        logging.debug("Zip contents:")
         logging.debug(z.namelist())
         ftp = connect_to_ftp()
         for filename in z.namelist():
