@@ -11,6 +11,43 @@ logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=sett
 
 logging.debug("sdx-downstream|START")
 
+def transform_xml(stored_json):
+    transform_url = "%s/xml" % (settings.SDX_TRANSFORM_XML_URL)
+    transformed_data = requests.post(transform_url, json=stored_json)
+    queue_notification(transformed_data.content)
+
+def queue_notification(notification):
+    connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
+    channel = connection.channel()
+    channel.queue_declare(queue=settings.RABBIT_QUEUE_XML)
+    channel.basic_publish(exchange='',
+                          properties=pika.BasicProperties(content_type='application/xml'),
+                          routing_key=settings.RABBIT_QUEUE_XML,
+                          body=notification)
+    logging.debug(notification)
+    connection.close()
+
+def transform_cs(stored_json, sequence_no):
+    transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
+    transformed_data = requests.post(transform_url, json=stored_json)
+    zip_contents = transformed_data.content
+
+    try:
+        z = zipfile.ZipFile(io.BytesIO(zip_contents))
+        logging.debug("Zip contents:")
+        logging.debug(z.namelist())
+        ftp = connect_to_ftp()
+        for filename in z.namelist():
+            if filename.endswith('/'):
+                continue
+            logging.debug("Processing file from zip: " + filename)
+            edc_file = z.open(filename)
+            deliver_binary_to_ftp(ftp, filename, edc_file.read())
+        ftp.quit()
+
+    except (RuntimeError, zipfile.BadZipfile):
+        logging.debug("Bad zip file!")
+            # TODO: Need to deal with exception
 
 def connect_to_ftp():
     ftp = FTP(settings.FTP_HOST)
@@ -37,30 +74,10 @@ def get_survey_from_store(mongoid):
     result = requests.get(sequence_url).json()
     sequence_no = result['sequence_no']
 
-    if stored_json['file-type'] == 'xml':
-        transform_url = "%s/xml/%d" % (settings.SDX_TRANSFORM_XML_URL, sequence_no)
+    if 'file-type' in stored_json and stored_json['file-type'] == 'xml':
+        transform_xml(stored_json)
     else:
-        transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
-
-    transformed_data = requests.post(transform_url, json=stored_json)
-    zip_contents = transformed_data.content
-
-    try:
-        z = zipfile.ZipFile(io.BytesIO(zip_contents))
-        logging.debug("Zip contents:")
-        logging.debug(z.namelist())
-        ftp = connect_to_ftp()
-        for filename in z.namelist():
-            if filename.endswith('/'):
-                continue
-            logging.debug("Processing file from zip: " + filename)
-            edc_file = z.open(filename)
-            deliver_binary_to_ftp(ftp, filename, edc_file.read())
-        ftp.quit()
-
-    except (RuntimeError, zipfile.BadZipfile):
-        logging.debug("Bad zip file!")
-        # TODO: Need to deal with exception
+        transform_cs(stored_json, sequence_no)
 
 def on_message(channel, method_frame, header_frame, body):
     logging.debug(method_frame.delivery_tag)

@@ -21,6 +21,7 @@ FTP_USER = os.getenv('FTP_USER')
 FTP_PASS = os.getenv('FTP_PASS')
 
 RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'sdx-survey-notifications')
+RABBIT_QUEUE_XML = os.getenv('RABBIT_QUEUE_XML', 'sdx-xml')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}?connection_attempts={connection_attempts}&retry_delay={retry_delay}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
