@@ -1,9 +1,7 @@
 import logging
 import os
 
-logger = logging.getLogger(__name__)
-
-LOGGING_FORMAT = "%(asctime)s|%(levelname)s: %(message)s"
+LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-downstream: user_id=%(user_id)s ru_ref=%(ru_ref)s %(message)s"
 LOGGING_LOCATION = "logs/downstream.log"
 LOGGING_LEVEL = logging.DEBUG
 
@@ -30,3 +28,13 @@ RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}?connection_atte
     connection_attempts=os.getenv('RABBITMQ_DEFAULT_CONN_ATTEMPTS', 5),
     retry_delay=os.getenv('RABBITMQ_DEFAULT_RETRY_DELAY', 5)
 )
+
+
+class ContextFilter(logging.Filter):
+
+    def filter(self, record):
+        if not hasattr(record, 'ru_ref'):
+            record.ru_ref = ""
+        if not hasattr(record, 'user_id'):
+            record.user_id = ""
+        return True

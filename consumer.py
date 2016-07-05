@@ -9,7 +9,13 @@ from ftplib import FTP
 
 logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
-logging.debug("sdx-downstream|START")
+logger = logging.getLogger(__name__)
+logger.addFilter(settings.ContextFilter())
+
+plogger = logging.getLogger('pika')
+plogger.addFilter(settings.ContextFilter())
+
+logger.debug("START")
 
 
 def connect_to_ftp():
@@ -33,6 +39,8 @@ def get_survey_from_store(mongoid):
     result = requests.get(store_url).json()
     stored_json = result['survey_response']
 
+    a1 = logging.LoggerAdapter(logger, stored_json['metadata'])
+
     sequence_url = settings.SDX_SEQUENCE_URL + "/sequence"
     result = requests.get(sequence_url).json()
     sequence_no = result['sequence_no']
@@ -43,24 +51,24 @@ def get_survey_from_store(mongoid):
 
     try:
         z = zipfile.ZipFile(io.BytesIO(zip_contents))
-        logging.debug("Zip contents:")
-        logging.debug(z.namelist())
+        a1.debug("Zip contents:")
+        a1.debug(z.namelist())
         ftp = connect_to_ftp()
         for filename in z.namelist():
             if filename.endswith('/'):
                 continue
-            logging.debug("Processing file from zip: " + filename)
+            a1.debug("Processing file from zip: " + filename)
             edc_file = z.open(filename)
             deliver_binary_to_ftp(ftp, filename, edc_file.read())
         ftp.quit()
 
     except (RuntimeError, zipfile.BadZipfile):
-        logging.debug("Bad zip file!")
+        a1.debug("Bad zip file!")
         # TODO: Need to deal with exception
 
 
 def on_message(channel, method_frame, header_frame, body):
-    logging.debug(method_frame.delivery_tag)
+    logger.debug(method_frame.delivery_tag)
     get_survey_from_store(body.decode("utf-8"))
     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
