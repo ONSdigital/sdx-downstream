@@ -1,6 +1,7 @@
 import pika
 import io
 import logging
+from structlog import wrap_logger
 import sys
 import settings
 import requests
@@ -9,14 +10,11 @@ from ftplib import FTP
 
 logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
-logger = logging.getLogger(__name__)
-logger.addFilter(settings.ContextFilter())
-
-plogger = logging.getLogger('pika')
-plogger.addFilter(settings.ContextFilter())
+logger = wrap_logger(
+    logging.getLogger(__name__)
+)
 
 logger.debug("START")
-
 
 def connect_to_ftp():
     ftp = FTP(settings.FTP_HOST)
@@ -38,8 +36,9 @@ def get_survey_from_store(mongoid):
     store_url = settings.SDX_STORE_URL + "/responses/" + mongoid
     result = requests.get(store_url).json()
     stored_json = result['survey_response']
+    metadata = stored_json['metadata']
 
-    a1 = logging.LoggerAdapter(logger, stored_json['metadata'])
+    bound_logger = logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
     sequence_url = settings.SDX_SEQUENCE_URL + "/sequence"
     result = requests.get(sequence_url).json()
@@ -51,19 +50,19 @@ def get_survey_from_store(mongoid):
 
     try:
         z = zipfile.ZipFile(io.BytesIO(zip_contents))
-        a1.debug("Zip contents:")
-        a1.debug(z.namelist())
+        bound_logger.debug("Zip contents:")
+        bound_logger.debug(z.namelist())
         ftp = connect_to_ftp()
         for filename in z.namelist():
             if filename.endswith('/'):
                 continue
-            a1.debug("Processing file from zip: " + filename)
+            bound_logger.debug("Processing file from zip: " + filename)
             edc_file = z.open(filename)
             deliver_binary_to_ftp(ftp, filename, edc_file.read())
         ftp.quit()
 
     except (RuntimeError, zipfile.BadZipfile):
-        a1.debug("Bad zip file!")
+        bound_logger.debug("Bad zip file!")
         # TODO: Need to deal with exception
 
 
