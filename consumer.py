@@ -16,6 +16,7 @@ logger = wrap_logger(
 
 logger.debug("START")
 
+
 def connect_to_ftp():
     ftp = FTP(settings.FTP_HOST)
     ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASS)
