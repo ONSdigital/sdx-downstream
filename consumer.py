@@ -2,18 +2,16 @@ import pika
 import io
 import logging
 from structlog import wrap_logger
-import sys
 import settings
 import requests
 import zipfile
 from ftplib import FTP
 
-logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
+logging.basicConfig(filename=settings.LOGGING_LOCATION, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
 logger = wrap_logger(
     logging.getLogger(__name__)
 )
-
 logger.debug("START")
 
 
@@ -40,7 +38,7 @@ def process_document(mongoid):
 
     if r.status_code != 200:
         #  Retrieval failed
-        logger.error("Store retrieval failed", document_id=mongoid, store_url=store_url)
+        logger.error("Store retrieval failed", document_id=mongoid, request_url=store_url)
 
         return
 
