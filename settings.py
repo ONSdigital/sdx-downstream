@@ -1,5 +1,8 @@
 import logging
 import os
+import requests
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-downstream: %(message)s"
 LOGGING_LOCATION = "logs/downstream.log"
@@ -28,3 +31,11 @@ RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}?connection_atte
     connection_attempts=os.getenv('RABBITMQ_DEFAULT_CONN_ATTEMPTS', 5),
     retry_delay=os.getenv('RABBITMQ_DEFAULT_RETRY_DELAY', 5)
 )
+
+# Configure the number of retries attempted before failing call
+session = requests.Session()
+
+retries = Retry(total=5, backoff_factor=0.1)
+
+session.mount('http://', HTTPAdapter(max_retries=retries))
+session.mount('https://', HTTPAdapter(max_retries=retries))

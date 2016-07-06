@@ -3,9 +3,10 @@ import io
 import logging
 from structlog import wrap_logger
 import settings
-import requests
+from settings import session
 import zipfile
 from ftplib import FTP
+from requests.packages.urllib3.exceptions import MaxRetryError
 
 logging.basicConfig(filename=settings.LOGGING_LOCATION, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
@@ -31,26 +32,40 @@ def deliver_binary_to_ftp(ftp, filename, data):
     ftp.storbinary('STOR ' + filename, stream)
 
 
+def remote_call(request_url, json=None):
+    try:
+        r = None
+
+        if json:
+            r = session.post(request_url, json=json)
+        else:
+            r = session.get(request_url)
+
+        return r
+    except MaxRetryError:
+        logger.error("Max retries exceeded (5)", request_url=request_url)
+
+
 def process_document(mongoid):
     store_url = settings.SDX_STORE_URL + "/responses/" + mongoid
 
-    r = requests.get(store_url)
+    r = remote_call(store_url)
 
     if r.status_code != 200:
         #  Retrieval failed
-        logger.error("Store retrieval failed", document_id=mongoid, request_url=store_url)
+        logger.error("Store retrieval failed", request_url=store_url, document_id=mongoid)
 
         return
 
     result = r.json()
-
     stored_json = result['survey_response']
     metadata = stored_json['metadata']
 
     bound_logger = logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
     sequence_url = settings.SDX_SEQUENCE_URL + "/sequence"
-    r = requests.get(sequence_url)
+
+    r = remote_call(sequence_url)
 
     if r.status_code != 200:
         bound_logger.error("Sequence retrieval failed", request_url=sequence_url)
@@ -60,7 +75,7 @@ def process_document(mongoid):
     sequence_no = result['sequence_no']
 
     transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
-    r = requests.post(transform_url, json=stored_json)
+    r = remote_call(transform_url, json=stored_json)
 
     if r.status_code != 200:
         bound_logger.error("Transform failed", request_url=transform_url, sequence_no=sequence_no)
