@@ -19,10 +19,10 @@ def transform_xml(stored_json):
 def queue_notification(notification):
     connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
     channel = connection.channel()
-    channel.queue_declare(queue=settings.RABBIT_QUEUE_XML)
+    channel.queue_declare(queue=settings.RABBIT_QUEUE_TESTFORM)
     channel.basic_publish(exchange='',
                           properties=pika.BasicProperties(content_type='application/xml'),
-                          routing_key=settings.RABBIT_QUEUE_XML,
+                          routing_key=settings.RABBIT_QUEUE_TESTFORM,
                           body=notification)
     logging.debug(notification)
     connection.close()
