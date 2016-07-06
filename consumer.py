@@ -12,7 +12,7 @@ logging.basicConfig(stream=sys.stdout, level=settings.LOGGING_LEVEL, format=sett
 logging.debug("sdx-downstream|START")
 
 def transform_xml(stored_json):
-    transform_url = "%s/xml" % (settings.SDX_TRANSFORM_XML_URL)
+    transform_url = "%s/xml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
     transformed_data = requests.post(transform_url, json=stored_json)
     queue_notification(transformed_data.content)
 
