@@ -1,4 +1,4 @@
-from example_consumer import ExampleConsumer
+from async_consumer import AsyncConsumer
 import io
 import logging
 from structlog import wrap_logger
@@ -46,11 +46,10 @@ def remote_call(request_url, json=None):
         logger.error("Max retries exceeded (5)", request_url=request_url)
 
 
-class Consumer(ExampleConsumer):
+class Consumer(AsyncConsumer):
     def on_message(self, unused_channel, basic_deliver, properties, body):
 
-        logger.info('Received message # %s from %s: %s',
-                    basic_deliver.delivery_tag, properties.app_id, body)
+        logger.info('Received message # %s from %s: %s' % (basic_deliver.delivery_tag, properties.app_id, body))
         # Trigger behaviour
         self.process_document(body.decode("utf-8"))
         self.acknowledge_message(basic_deliver.delivery_tag)
@@ -111,10 +110,14 @@ class Consumer(ExampleConsumer):
             self.logger.error("Bad zip file", exception=e)
             # TODO: Need to deal with exception
 
-if __name__ == '__main__':
-    consumer = Consumer(settings.RABBIT_URL)
 
+def main():
+    logger.debug("Starting consumer")
+    consumer = Consumer(settings.RABBIT_URL)
     try:
         consumer.run()
     except KeyboardInterrupt:
         consumer.stop()
+
+if __name__ == '__main__':
+    main()
