@@ -57,7 +57,7 @@ class AsyncConsumer(object):
         count = 1
         while not self._stopped:
             no_of_servers = len(self._amqpUrls)
-            server_choice = (count % 3) - 1
+            server_choice = (count % no_of_servers) - 1
 
             try:
                 LOGGER.info('Connecting', amqp_url=self._amqpUrls[server_choice])
