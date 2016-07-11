@@ -1,4 +1,3 @@
-from pika import adapters
 import pika
 import logging
 from structlog import wrap_logger
