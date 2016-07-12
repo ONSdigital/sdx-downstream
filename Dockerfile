@@ -1,7 +1,7 @@
 FROM onsdigital/flask-crypto
 
-ADD app.py /app/app.py
-ADD example_consumer.py /app/example_consumer.py
+ADD consumer.py /app/consumer.py
+ADD async_consumer.py /app/async_consumer.py
 ADD settings.py /app/settings.py
 ADD requirements.txt /app/requirements.txt
 
@@ -12,4 +12,4 @@ WORKDIR /app/
 
 RUN pip3 install --no-cache-dir -U -I -r /app/requirements.txt
 
-ENTRYPOINT python3 app.py
+ENTRYPOINT python3 consumer.py
