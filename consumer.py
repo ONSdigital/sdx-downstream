@@ -26,7 +26,7 @@ class Consumer(AsyncConsumer):
 
 def main():
     logger.debug("Starting consumer")
-    consumer = Consumer(settings.RABBIT_URL)
+    consumer = Consumer()
     try:
         consumer.run()
     except KeyboardInterrupt:
