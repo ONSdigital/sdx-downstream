@@ -75,7 +75,7 @@ class ResponseProcessor:
 
         return zip_ok
 
-    def get_doc_from_store(mongoid):
+    def get_doc_from_store(self, mongoid):
         """Retrieve a doc from the store. Bind a logger to a user/ru_ref
 
         :rtype boolean: Whether the doc was retrieved successfully
@@ -97,7 +97,7 @@ class ResponseProcessor:
 
         r = remote_call(sequence_url)
 
-        if not self.response_ok(r, "Sequence retrieval failed"):
+        if not response_ok(r, "Sequence retrieval failed"):
             return False
 
         result = r.json()
@@ -107,7 +107,7 @@ class ResponseProcessor:
         transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
         r = remote_call(transform_url, json=survey_response)
 
-        if not self.response_ok(r, "Transform failed", sequence_no=sequence_no):
+        if not response_ok(r, "Transform failed", sequence_no=sequence_no):
             return False
 
         return r.content
