@@ -58,7 +58,35 @@ class TestResponseProcessor(unittest.TestCase):
         rp.transform_response.assert_called_with(1, fake_response)
 
     def test_transform_response_failure(self):
-        pass
+        fake_response = json.loads(self.METADATA_RESPONSE)
+
+        fake_zip = {"content": "some-random-content"}
+
+        rp = ResponseProcessor(logger)
+        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_sequence_no = MagicMock(return_value=1)
+        rp.transform_response = MagicMock(return_value=fake_zip)
+        rp.process_zip = MagicMock(return_value=False)
+
+        response = rp.process("some_made_up_id")
+
+        rp.transform_response.assert_called_with(1, fake_response)
+        rp.process_zip.assert_called_with(fake_zip)
+        self.assertFalse(response)
 
     def test_transform_reponse_success(self):
-        pass
+        fake_response = json.loads(self.METADATA_RESPONSE)
+
+        fake_zip = {"content": "some-random-content"}
+
+        rp = ResponseProcessor(logger)
+        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_sequence_no = MagicMock(return_value=1)
+        rp.transform_response = MagicMock(return_value=fake_zip)
+        rp.process_zip = MagicMock(return_value=True)
+
+        response = rp.process("some_made_up_id")
+
+        rp.transform_response.assert_called_with(1, fake_response)
+        rp.process_zip.assert_called_with(fake_zip)
+        self.assertTrue(response)
