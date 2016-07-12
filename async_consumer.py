@@ -62,10 +62,10 @@ class AsyncConsumer(object):
             try:
                 LOGGER.info('Connecting', amqp_url=self._url)
                 return pika.SelectConnection(pika.URLParameters(self._url),
-                                     self.on_connection_open,
-                                     stop_ioloop_on_close=False)
+                                             self.on_connection_open,
+                                             stop_ioloop_on_close=False)
             except pika.exceptions.AMQPConnectionError as e:
-                LOGGER.error("Connection error", amqp_url=self._url)
+                LOGGER.error("Connection error", exception=e, amqp_url=self._url)
                 count += 1
                 LOGGER.error("Connection sleep", no_of_seconds=count)
                 time.sleep(count)
