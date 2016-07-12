@@ -4,4 +4,4 @@ python:
 install: "pip install -r test_requirements.txt"
 script: 
 - flake8
-- python -m unittest tests/test_service.py
+- python -m unittest tests/*.py
