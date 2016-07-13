@@ -4,7 +4,7 @@ from structlog import wrap_logger
 import settings
 from response_processor import ResponseProcessor
 
-logging.basicConfig(filename=settings.LOGGING_LOCATION, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
+logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
 logger = logging.getLogger(__name__)
 

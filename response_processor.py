@@ -7,7 +7,7 @@ from settings import session
 from ftplib import FTP
 from requests.packages.urllib3.exceptions import MaxRetryError
 
-logging.basicConfig(filename=settings.LOGGING_LOCATION, level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
+logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
 logger = logging.getLogger(__name__)
 
