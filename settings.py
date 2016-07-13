@@ -6,7 +6,18 @@ from requests.adapters import HTTPAdapter
 
 LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-downstream: %(message)s"
 LOGGING_LOCATION = "logs/downstream.log"
+LOGGING_ROOT = os.path.dirname(LOGGING_LOCATION)
 LOGGING_LEVEL = logging.DEBUG
+
+
+def create_log_file():
+    if not os.path.exists(LOGGING_ROOT):
+        os.makedirs(LOGGING_ROOT)
+
+    if not os.path.exists(LOGGING_LOCATION):
+        open(LOGGING_LOCATION, 'w').close()
+
+create_log_file()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
