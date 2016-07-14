@@ -1,8 +1,8 @@
 import logging
 from structlog import wrap_logger
-from async_consumer import AsyncConsumer
-import settings
-from response_processor import ResponseProcessor
+from app.async_consumer import AsyncConsumer
+from app import settings
+from app.response_processor import ResponseProcessor
 
 logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 

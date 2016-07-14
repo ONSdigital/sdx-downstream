@@ -1,6 +1,6 @@
 import logging
-import settings
-from settings import session
+from app import settings
+from app.settings import session
 import zipfile
 import io
 import pika
@@ -13,7 +13,6 @@ logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT
 logger = logging.getLogger(__name__)
 
 logger = wrap_logger(logger)
-logger.debug("START")
 
 
 def connect_to_ftp():

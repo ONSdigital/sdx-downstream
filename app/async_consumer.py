@@ -1,8 +1,10 @@
 import pika
 import logging
 from structlog import wrap_logger
-import settings
+from app import settings
 import time
+
+logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
 LOGGER = wrap_logger(
     logging.getLogger(__name__)
