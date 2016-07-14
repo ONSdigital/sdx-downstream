@@ -1,6 +1,6 @@
 # sdx-downstream
 
-The sdx-downstream app is used within the Office National for Statistics (ONS) for consuming decrypted Survey Data Exchange (SDX) Surveys from sdx-store and delivering them to downstream environments e.g. Common Software.
+The sdx-downstream app is used within the Office for National Statistics (ONS) for consuming decrypted Survey Data Exchange (SDX) Surveys from sdx-store and delivering them to downstream environments e.g. Common Software.
 
 ## Installation
 
