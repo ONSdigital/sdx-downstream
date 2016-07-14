@@ -33,6 +33,8 @@ def deliver_binary_to_ftp(ftp, filename, data):
 
 def remote_call(request_url, json=None):
     try:
+        logger.info("Calling service", request_url=request_url)
+
         r = None
 
         if json:
@@ -45,11 +47,13 @@ def remote_call(request_url, json=None):
         logger.error("Max retries exceeded (5)", request_url=request_url)
 
 
-def response_ok(res, error_on_fail, **kwargs):
-    if res.status_code != 200:
-        logger.error(error_on_fail, request_url=res.url, **kwargs)
+def response_ok(res):
+    if res.status_code == 200:
+        logger.info("Returned from service", request_url=res.url, status_code=res.status_code)
+        return True
+    else:
+        logger.error("Returned from service", request_url=res.url, status_code=res.status_code)
         return False
-    return True
 
 
 class ResponseProcessor:
@@ -93,7 +97,10 @@ class ResponseProcessor:
 
         r = remote_call(store_url)
 
-        if not response_ok(r, "Store retrieval failed", document_id=mongoid):
+        if r.status_code == 200:
+            logger.info("Store retrieval success", request_url=r.url)
+        else:
+            logger.info("Store retrieval failed", request_url=r.url, status_code=r.status_code)
             return False
 
         result = r.json()
@@ -105,7 +112,7 @@ class ResponseProcessor:
 
         r = remote_call(sequence_url)
 
-        if not response_ok(r, "Sequence retrieval failed"):
+        if not response_ok(r):
             return False
 
         result = r.json()
@@ -115,7 +122,7 @@ class ResponseProcessor:
         transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
         r = remote_call(transform_url, json=survey_response)
 
-        if not response_ok(r, "Transform failed", sequence_no=sequence_no):
+        if not response_ok(r):
             return False
 
         return r.content
@@ -124,7 +131,7 @@ class ResponseProcessor:
         transform_url = "%s/xml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
         r = remote_call(transform_url, json=survey_response)
 
-        if not response_ok(r, "Transform failed"):
+        if not response_ok(r):
             return False
 
         return r.content
