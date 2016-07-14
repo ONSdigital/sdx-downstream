@@ -1,10 +1,10 @@
 import logging
 import settings
+from settings import session
 import zipfile
 import io
 import pika
 from structlog import wrap_logger
-from settings import session
 from ftplib import FTP
 from requests.packages.urllib3.exceptions import MaxRetryError
 

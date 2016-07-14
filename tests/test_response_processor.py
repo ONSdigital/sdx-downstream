@@ -2,7 +2,7 @@ import unittest
 import logging
 import json
 from unittest.mock import MagicMock
-from response_processor import ResponseProcessor
+from app.response_processor import ResponseProcessor
 logger = logging.getLogger(__name__)
 
 
