@@ -166,6 +166,7 @@ class ResponseProcessor:
 
         """
         try:
+            self.logging.debug("XML Queueing Start")
             connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
             channel = connection.channel()
             channel.queue_declare(queue=settings.RABBIT_QUEUE_TESTFORM)
@@ -173,9 +174,9 @@ class ResponseProcessor:
                                   properties=pika.BasicProperties(content_type='application/xml'),
                                   routing_key=settings.RABBIT_QUEUE_TESTFORM,
                                   body=notification)
-            logging.debug(notification)
+            self.logging.debug("XML Queuing Success")
             connection.close()
             return True
         except:
-            self.logger.error("XML Queue notification Failure", notification=notification)
+            self.logger.error("XML Queuing Failed")
             return False
