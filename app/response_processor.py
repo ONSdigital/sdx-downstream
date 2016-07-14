@@ -159,7 +159,7 @@ class ResponseProcessor:
             self.logger.error("Bad zip file", exception=e)
             return False
 
-    def notify_queue(self, notification):
+    def notify_queue(self, survey_xml):
         """Method to process the content of a census 2016 response
 
         :rtype boolean: Whether the queue was notified successfully
@@ -173,7 +173,7 @@ class ResponseProcessor:
             channel.basic_publish(exchange='',
                                   properties=pika.BasicProperties(content_type='application/xml'),
                                   routing_key=settings.RABBIT_QUEUE_TESTFORM,
-                                  body=notification)
+                                  body=survey_xml)
             self.logging.debug("XML Queuing Success")
             connection.close()
             return True
