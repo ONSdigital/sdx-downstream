@@ -88,7 +88,7 @@ class ResponseProcessor:
                 return processed_ok
 
     def get_doc_from_store(self, mongoid):
-        """Retrieve a doc from the store. Bind a logger to a user/ru_ref
+        """Retrieve a doc from the store.
 
         :rtype boolean: Whether the doc was retrieved successfully
 

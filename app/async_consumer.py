@@ -140,8 +140,8 @@ class AsyncConsumer(object):
         :param str reply_text: The text reason the channel was closed
 
         """
-        LOGGER.warning('Channel %i was closed: (%s) %s',
-                       channel, reply_code, reply_text)
+        LOGGER.warning('Channel was closed', channel=channel,
+                       reply_code=reply_code, reply_text=reply_text)
         self._connection.close()
 
     def on_channel_open(self, channel):
