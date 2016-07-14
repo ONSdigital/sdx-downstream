@@ -2,6 +2,7 @@ import logging
 import settings
 import zipfile
 import io
+import pika
 from structlog import wrap_logger
 from settings import session
 from ftplib import FTP
@@ -57,7 +58,7 @@ class ResponseProcessor:
         self.logger = logger
 
     def process(self, mongoid):
-        zip_ok = False
+        processed_ok = False
         survey_response = self.get_doc_from_store(mongoid)
 
         if survey_response:
@@ -68,12 +69,20 @@ class ResponseProcessor:
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
-            zip_contents = self.transform_response(sequence_no, survey_response)
+            if 'file-type' in survey_response and survey_response['file-type'] == 'xml':
+                xml_content = self.transform_xml(survey_response)
 
-            if zip_contents:
-                zip_ok = self.process_zip(zip_contents)
+                if xml_content:
+                    processed_ok = self.notify_queue(xml_content)
 
-        return zip_ok
+                return processed_ok
+            else:
+                zip_contents = self.transform_cs(sequence_no, survey_response)
+
+                if zip_contents:
+                    processed_ok = self.process_zip(zip_contents)
+
+                return processed_ok
 
     def get_doc_from_store(self, mongoid):
         """Retrieve a doc from the store. Bind a logger to a user/ru_ref
@@ -103,7 +112,7 @@ class ResponseProcessor:
         result = r.json()
         return result['sequence_no']
 
-    def transform_response(self, sequence_no, survey_response):
+    def transform_cs(self, sequence_no, survey_response):
         transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
         r = remote_call(transform_url, json=survey_response)
 
@@ -112,8 +121,17 @@ class ResponseProcessor:
 
         return r.content
 
+    def transform_xml(self, survey_response):
+        transform_url = "%s/xml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
+        r = remote_call(transform_url, json=survey_response)
+
+        if not response_ok(r, "Transform failed"):
+            return False
+
+        return r.content
+
     def process_zip(self, zip_contents):
-        """Method to process the content of a response
+        """Method to process the content of a common software response
 
         :rtype boolean: Whether the zip was unarchived successfully
 
@@ -133,4 +151,25 @@ class ResponseProcessor:
 
         except (RuntimeError, zipfile.BadZipfile) as e:
             self.logger.error("Bad zip file", exception=e)
+            return False
+
+    def notify_queue(self, notification):
+        """Method to process the content of a census 2016 response
+
+        :rtype boolean: Whether the queue was notified successfully
+
+        """
+        try:
+            connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
+            channel = connection.channel()
+            channel.queue_declare(queue=settings.RABBIT_QUEUE_TESTFORM)
+            channel.basic_publish(exchange='',
+                                  properties=pika.BasicProperties(content_type='application/xml'),
+                                  routing_key=settings.RABBIT_QUEUE_TESTFORM,
+                                  body=notification)
+            logging.debug(notification)
+            connection.close()
+            return True
+        except:
+            self.logger.error("XML Queue notification Failure", notification=notification)
             return False
