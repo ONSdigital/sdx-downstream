@@ -1,10 +1,10 @@
 import logging
-import settings
+from app import settings
+from app.settings import session
 import zipfile
 import io
 import pika
 from structlog import wrap_logger
-from settings import session
 from ftplib import FTP
 from requests.packages.urllib3.exceptions import MaxRetryError
 
@@ -13,7 +13,6 @@ logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT
 logger = logging.getLogger(__name__)
 
 logger = wrap_logger(logger)
-logger.debug("START")
 
 
 def connect_to_ftp():
@@ -34,6 +33,8 @@ def deliver_binary_to_ftp(ftp, filename, data):
 
 def remote_call(request_url, json=None):
     try:
+        logger.info("Calling service", request_url=request_url)
+
         r = None
 
         if json:
@@ -46,11 +47,13 @@ def remote_call(request_url, json=None):
         logger.error("Max retries exceeded (5)", request_url=request_url)
 
 
-def response_ok(res, error_on_fail, **kwargs):
-    if res.status_code != 200:
-        logger.error(error_on_fail, request_url=res.url, **kwargs)
+def response_ok(res):
+    if res.status_code == 200:
+        logger.info("Returned from service", request_url=res.url, status_code=res.status_code)
+        return True
+    else:
+        logger.error("Returned from service", request_url=res.url, status_code=res.status_code)
         return False
-    return True
 
 
 class ResponseProcessor:
@@ -85,7 +88,7 @@ class ResponseProcessor:
                 return processed_ok
 
     def get_doc_from_store(self, mongoid):
-        """Retrieve a doc from the store. Bind a logger to a user/ru_ref
+        """Retrieve a doc from the store.
 
         :rtype boolean: Whether the doc was retrieved successfully
 
@@ -94,7 +97,10 @@ class ResponseProcessor:
 
         r = remote_call(store_url)
 
-        if not response_ok(r, "Store retrieval failed", document_id=mongoid):
+        if r.status_code == 200:
+            logger.info("Store retrieval success", request_url=r.url)
+        else:
+            logger.info("Store retrieval failed", request_url=r.url, status_code=r.status_code)
             return False
 
         result = r.json()
@@ -106,7 +112,7 @@ class ResponseProcessor:
 
         r = remote_call(sequence_url)
 
-        if not response_ok(r, "Sequence retrieval failed"):
+        if not response_ok(r):
             return False
 
         result = r.json()
@@ -116,7 +122,7 @@ class ResponseProcessor:
         transform_url = "%s/common-software/%d" % (settings.SDX_TRANSFORM_CS_URL, sequence_no)
         r = remote_call(transform_url, json=survey_response)
 
-        if not response_ok(r, "Transform failed", sequence_no=sequence_no):
+        if not response_ok(r):
             return False
 
         return r.content
@@ -125,7 +131,7 @@ class ResponseProcessor:
         transform_url = "%s/xml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
         r = remote_call(transform_url, json=survey_response)
 
-        if not response_ok(r, "Transform failed"):
+        if not response_ok(r):
             return False
 
         return r.content
@@ -153,23 +159,24 @@ class ResponseProcessor:
             self.logger.error("Bad zip file", exception=e)
             return False
 
-    def notify_queue(self, notification):
+    def notify_queue(self, survey_xml):
         """Method to process the content of a census 2016 response
 
         :rtype boolean: Whether the queue was notified successfully
 
         """
         try:
+            self.logging.debug("XML Queueing Start")
             connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
             channel = connection.channel()
             channel.queue_declare(queue=settings.RABBIT_QUEUE_TESTFORM)
             channel.basic_publish(exchange='',
                                   properties=pika.BasicProperties(content_type='application/xml'),
                                   routing_key=settings.RABBIT_QUEUE_TESTFORM,
-                                  body=notification)
-            logging.debug(notification)
+                                  body=survey_xml)
+            self.logging.debug("XML Queuing Success")
             connection.close()
             return True
         except:
-            self.logger.error("XML Queue notification Failure", notification=notification)
+            self.logger.error("XML Queuing Failed")
             return False

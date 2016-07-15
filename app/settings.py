@@ -47,6 +47,8 @@ RABBIT_URL3 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
 )
 
+RABBIT_URLS = [RABBIT_URL, RABBIT_URL2, RABBIT_URL3]
+
 # Configure the number of retries attempted before failing call
 session = requests.Session()
 

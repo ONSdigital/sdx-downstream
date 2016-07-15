@@ -1,8 +1,10 @@
 import pika
 import logging
 from structlog import wrap_logger
-import settings
+from app import settings
 import time
+
+logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
 LOGGER = wrap_logger(
     logging.getLogger(__name__)
@@ -27,10 +29,7 @@ class AsyncConsumer(object):
     QUEUE = settings.RABBIT_QUEUE
 
     def __init__(self):
-        """Create a new instance of the consumer class, passing in the AMQP
-        URL used to connect to RabbitMQ.
-
-        :param str amqp_url: The AMQP url to connect with
+        """Create a new instance of the consumer class
 
         """
         self._connection = None
@@ -39,11 +38,6 @@ class AsyncConsumer(object):
         self._consumer_tag = None
         self._url = None
         self._stopped = False
-        self._amqpUrls = [
-            settings.RABBIT_URL,
-            settings.RABBIT_URL2,
-            settings.RABBIT_URL3
-        ]
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
@@ -54,13 +48,14 @@ class AsyncConsumer(object):
 
         """
         count = 1
+        no_of_servers = len(settings.RABBIT_URLS)
+
         while not self._stopped:
-            no_of_servers = len(self._amqpUrls)
             server_choice = (count % no_of_servers) - 1
-            self._url = self._amqpUrls[server_choice]
+            self._url = settings.RABBIT_URLS[server_choice]
 
             try:
-                LOGGER.info('Connecting', amqp_url=self._url)
+                LOGGER.info('Connecting', amqp_url=self._url, attempt=count)
                 return pika.SelectConnection(pika.URLParameters(self._url),
                                              self.on_connection_open,
                                              stop_ioloop_on_close=False)
@@ -145,8 +140,8 @@ class AsyncConsumer(object):
         :param str reply_text: The text reason the channel was closed
 
         """
-        LOGGER.warning('Channel %i was closed: (%s) %s',
-                       channel, reply_code, reply_text)
+        LOGGER.warning('Channel was closed', channel=channel,
+                       reply_code=reply_code, reply_text=reply_text)
         self._connection.close()
 
     def on_channel_open(self, channel):
