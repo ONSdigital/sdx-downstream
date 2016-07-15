@@ -8,7 +8,7 @@ Using virtualenv and pip, create a new environment and install within using:
 
     $ pip install -r requirements.txt
 
-To run the tests, install into a virtualenv using:
+To run the tests, also install the test dependencies into a virtualenv using:
 
     $ pip install -r test_requirements.txt
 
@@ -28,5 +28,4 @@ The following envioronment variables can be set:
 
 ## Usage
 
-sdx-downstream works as a single consumer which exposes no endpoints. The best way to test its behaviour is to start it within a [docker-compose setup](https://github.com/ONSdigital/dockers) and trigger the consumer through the console. 
-
+sdx-downstream works as a single consumer which exposes no endpoints. The best way to test its behaviour is to start it within a [docker-compose setup](https://github.com/ONSdigital/dockers) and trigger the consumer through the console.
