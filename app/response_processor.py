@@ -66,10 +66,13 @@ class ResponseProcessor:
 
         if survey_response:
             # Update consumers logger to use bound vars
-            self.logger = logger.bind(tx_id=survey_response['tx_id'])
+            metadata = survey_response['metadata']
+
+            self.logger = logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'], tx_id=survey_response['tx_id'])
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
+
             if 'file-type' in survey_response and survey_response['file-type'] == 'xml':
                 xml_content = self.transform_xml(survey_response)
 

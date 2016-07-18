@@ -8,12 +8,20 @@ logger = logging.getLogger(__name__)
 
 class TestResponseProcessor(unittest.TestCase):
     RESPONSE_WITH_TX = '''{
-            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb"
+            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
+            "metadata": {
+              "user_id": "789473423",
+              "ru_ref": "12345678901A"
+            }
         }'''
 
     XML_RESPONSE = '''{
             "file-type": "xml",
-            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb"
+            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
+            "metadata": {
+              "user_id": "789473423",
+              "ru_ref": "12345678901A"
+            }
         }'''
 
     def test_store_response_failure(self):
