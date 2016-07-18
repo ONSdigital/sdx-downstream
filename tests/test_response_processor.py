@@ -7,19 +7,13 @@ logger = logging.getLogger(__name__)
 
 
 class TestResponseProcessor(unittest.TestCase):
-    METADATA_RESPONSE = '''{
-            "metadata": {
-              "user_id": "789473423",
-              "ru_ref": "12345678901A"
-            }
+    RESPONSE_WITH_TX = '''{
+            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb"
         }'''
 
     XML_RESPONSE = '''{
             "file-type": "xml",
-            "metadata": {
-              "user_id": "789473423",
-              "ru_ref": "12345678901A"
-            }
+            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb"
         }'''
 
     def test_store_response_failure(self):
@@ -31,7 +25,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_store_response_success(self):
-        fake_response = json.loads(self.METADATA_RESPONSE)
+        fake_response = json.loads(self.RESPONSE_WITH_TX)
 
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=fake_response)
@@ -42,7 +36,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_sequence_response_failure(self):
-        fake_response = json.loads(self.METADATA_RESPONSE)
+        fake_response = json.loads(self.RESPONSE_WITH_TX)
 
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=fake_response)
@@ -53,7 +47,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_sequence_response_success(self):
-        fake_response = json.loads(self.METADATA_RESPONSE)
+        fake_response = json.loads(self.RESPONSE_WITH_TX)
 
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=fake_response)
@@ -66,7 +60,7 @@ class TestResponseProcessor(unittest.TestCase):
         rp.transform_cs.assert_called_with(1, fake_response)
 
     def test_transform_cs_failure(self):
-        fake_response = json.loads(self.METADATA_RESPONSE)
+        fake_response = json.loads(self.RESPONSE_WITH_TX)
 
         fake_zip = {"content": "some-random-content"}
 
@@ -83,7 +77,7 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_transform_reponse_success(self):
-        fake_response = json.loads(self.METADATA_RESPONSE)
+        fake_response = json.loads(self.RESPONSE_WITH_TX)
 
         fake_zip = {"content": "some-random-content"}
 

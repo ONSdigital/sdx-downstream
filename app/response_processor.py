@@ -65,10 +65,8 @@ class ResponseProcessor:
         survey_response = self.get_doc_from_store(mongoid)
 
         if survey_response:
-            metadata = survey_response['metadata']
-
             # Update consumers logger to use bound vars
-            self.logger = logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
+            self.logger = logger.bind(tx_id=survey_response['tx_id'])
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
