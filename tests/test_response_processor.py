@@ -1,9 +1,11 @@
 import unittest
 import logging
 import json
+from app import settings
 from unittest.mock import MagicMock
-from app.response_processor import ResponseProcessor
 from structlog import wrap_logger
+from app.response_processor import ResponseProcessor, get_ftp_folder
+from tests.test_data import survey_no_heartbeat, survey_heartbeat_true
 
 logger = wrap_logger(logging.getLogger(__name__))
 
@@ -81,7 +83,7 @@ class TestResponseProcessor(unittest.TestCase):
         response = rp.process("some_made_up_id")
 
         rp.transform_cs.assert_called_with(1, fake_response)
-        rp.process_zip.assert_called_with(fake_zip)
+        rp.process_zip.assert_called_with(settings.FTP_FOLDER, fake_zip)
         self.assertFalse(response)
 
     def test_transform_reponse_success(self):
@@ -98,7 +100,7 @@ class TestResponseProcessor(unittest.TestCase):
         response = rp.process("some_made_up_id")
 
         rp.transform_cs.assert_called_with(1, fake_response)
-        rp.process_zip.assert_called_with(fake_zip)
+        rp.process_zip.assert_called_with(settings.FTP_FOLDER, fake_zip)
         self.assertTrue(response)
 
     def test_transform_xml_failure(self):
@@ -130,3 +132,22 @@ class TestResponseProcessor(unittest.TestCase):
         response = rp.process("some_made_up_id")
         rp.notify_queue.assert_called_with(fake_xml)
         self.assertTrue(response)
+
+    def test_get_ftp_folder_no_heartbeat(self):
+        survey = json.loads(survey_no_heartbeat)
+        folder = get_ftp_folder(survey)
+
+        self.assertEqual(folder, settings.FTP_FOLDER)
+
+    def test_get_ftp_folder_heartbeat_false(self):
+        survey = json.loads(survey_heartbeat_true)
+        survey['heartbeat'] = False
+        folder = get_ftp_folder(survey)
+
+        self.assertEqual(folder, settings.FTP_FOLDER)
+
+    def test_get_ftp_folder_heartbeat_true(self):
+        survey = json.loads(survey_heartbeat_true)
+        folder = get_ftp_folder(survey)
+
+        self.assertEqual(folder, settings.FTP_HEARTBEAT_FOLDER)
