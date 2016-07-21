@@ -28,7 +28,6 @@ class Consumer(AsyncConsumer):
         self._channel.basic_ack(delivery_tag)
 
 
-
 def main():
     logger.debug("Starting consumer")
     consumer = Consumer()
