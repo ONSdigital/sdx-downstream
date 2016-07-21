@@ -59,6 +59,7 @@ def response_ok(res):
 class ResponseProcessor:
     def __init__(self, logger):
         self.logger = logger
+        self.tx_id = ""
 
     def process(self, mongoid):
         processed_ok = False
@@ -71,7 +72,8 @@ class ResponseProcessor:
             self.logger = logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
             if 'tx_id' in survey_response:
-                self.logger = self.logger.bind(tx_id=survey_response['tx_id'])
+                self.tx_id = survey_response['tx_id']
+                self.logger = self.logger.bind(tx_id=self.tx_id)
 
             sequence_no = self.get_sequence_no()
 

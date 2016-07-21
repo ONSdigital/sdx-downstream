@@ -21,9 +21,14 @@ class Consumer(AsyncConsumer):
             proccessed_ok = processor.process(body.decode("utf-8"))
 
             if proccessed_ok:
-                self.acknowledge_message(basic_deliver.delivery_tag)
+                self.acknowledge_message(basic_deliver.delivery_tag, processor.tx_id)
         except Exception as e:
             logger.error("ResponseProcessor failed", exception=e)
+
+    def acknowledge_message(self, delivery_tag, tx_id):
+        logger.info('Acknowledging message', d_tag=delivery_tag, tx_id=tx_id)
+        self._channel.basic_ack(delivery_tag)
+
 
 
 def main():
