@@ -6,9 +6,7 @@ from app.response_processor import ResponseProcessor
 
 logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
 
-logger = logging.getLogger(__name__)
-
-logger = wrap_logger(logger)
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 class Consumer(AsyncConsumer):
