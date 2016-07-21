@@ -1,12 +1,12 @@
-survey_no_heartbeat = '''
+survey_census = '''
 {
   "type": "uk.gov.ons.edc.eq:surveyresponse",
-  "origin": "uk.gov.ons.edc.eq",
-  "survey_id": "194825",
   "version": "0.0.1",
+  "origin": "uk.gov.ons.edc.eq",
+  "survey_id": "0",
   "collection": {
     "exercise_sid": "hfjdskf",
-    "instrument_id": "10",
+    "instrument_id": "ce2016",
     "period": "0616"
   },
   "submitted_at": "2016-03-12T10:39:40Z",
@@ -23,28 +23,27 @@ survey_no_heartbeat = '''
 }
 '''
 
-survey_heartbeat_true = '''
+survey_023 = '''
 {
-  "heartbeat": true,
   "type": "uk.gov.ons.edc.eq:surveyresponse",
-  "origin": "uk.gov.ons.edc.eq",
-  "survey_id": "194825",
   "version": "0.0.1",
+  "origin": "uk.gov.ons.edc.eq",
+  "survey_id": "023",
   "collection": {
     "exercise_sid": "hfjdskf",
-    "instrument_id": "10",
-    "period": "0616"
+    "instrument_id": "0102",
+    "period": "1604"
   },
-  "submitted_at": "2016-03-12T10:39:40Z",
+  "submitted_at": "2016-03-12T13:01:26Z",
   "metadata": {
     "user_id": "789473423",
-    "ru_ref": "1234570071A"
+    "ru_ref": "12345678901A"
   },
   "data": {
-    "1": "2",
-    "2": "4",
-    "3": "2",
-    "4": "Y"
+    "11": "1/4/2016",
+    "12": "31/10/2016",
+    "20": "1800000",
+    "21": "60000"
   }
 }
 '''

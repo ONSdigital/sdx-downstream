@@ -4,36 +4,23 @@ import json
 from app import settings
 from unittest.mock import MagicMock
 from structlog import wrap_logger
-from app.response_processor import ResponseProcessor, get_ftp_folder
-from tests.test_data import survey_no_heartbeat, survey_heartbeat_true
+from app.response_processor import ResponseProcessor, get_ftp_folder, is_census_transform
+from tests.test_data import survey_census, survey_023
 
 logger = wrap_logger(logging.getLogger(__name__))
 
 
 class TestResponseProcessor(unittest.TestCase):
-    RESPONSE_WITHOUT_TX = '''{
-            "metadata": {
-              "user_id": "789473423",
-              "ru_ref": "12345678901A"
-            }
-        }'''
 
-    RESPONSE_WITH_TX = '''{
-            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
-            "metadata": {
-              "user_id": "789473423",
-              "ru_ref": "12345678901A"
-            }
-        }'''
+    def setUp(self):
+        self.survey = json.loads(survey_023)
+        self.census = json.loads(survey_census)
 
-    XML_RESPONSE = '''{
-            "file-type": "xml",
-            "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
-            "metadata": {
-              "user_id": "789473423",
-              "ru_ref": "12345678901A"
-            }
-        }'''
+    def add_tx(self):
+        self.survey["tx_id"] = "0f534ffc-9442-414c-b39f-a756b4adc6cb"
+
+    def add_heartbeat(self):
+        self.survey["heartbeat"] = True
 
     def test_store_response_failure(self):
         rp = ResponseProcessor(logger)
@@ -41,24 +28,23 @@ class TestResponseProcessor(unittest.TestCase):
         response = rp.process("some_made_up_id")
 
         rp.get_doc_from_store.assert_called_with("some_made_up_id")
+
         self.assertFalse(response)
 
     def test_store_response_success(self):
-        fake_response = json.loads(self.RESPONSE_WITH_TX)
-
+        # test without tx_id
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.survey)
         rp.get_sequence_no = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
 
         self.assertFalse(response)
 
-        # Also test without the tx_id
-        fake_response = json.loads(self.RESPONSE_WITHOUT_TX)
-
+        # with tx_id
+        self.add_tx()
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.survey)
         rp.get_sequence_no = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
@@ -66,10 +52,8 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_sequence_response_failure(self):
-        fake_response = json.loads(self.RESPONSE_WITH_TX)
-
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.survey)
         rp.get_sequence_no = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
@@ -77,59 +61,51 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_sequence_response_success(self):
-        fake_response = json.loads(self.RESPONSE_WITH_TX)
-
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.survey)
         rp.get_sequence_no = MagicMock(return_value=1)
         rp.transform_cs = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
 
         self.assertFalse(response)
-        rp.transform_cs.assert_called_with(1, fake_response)
+        rp.transform_cs.assert_called_with(1, self.survey)
 
     def test_transform_cs_failure(self):
-        fake_response = json.loads(self.RESPONSE_WITH_TX)
-
         fake_zip = {"content": "some-random-content"}
 
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.survey)
         rp.get_sequence_no = MagicMock(return_value=1)
         rp.transform_cs = MagicMock(return_value=fake_zip)
         rp.process_zip = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
 
-        rp.transform_cs.assert_called_with(1, fake_response)
+        rp.transform_cs.assert_called_with(1, self.survey)
         rp.process_zip.assert_called_with(settings.FTP_FOLDER, fake_zip)
         self.assertFalse(response)
 
     def test_transform_reponse_success(self):
-        fake_response = json.loads(self.RESPONSE_WITH_TX)
-
         fake_zip = {"content": "some-random-content"}
 
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.survey)
         rp.get_sequence_no = MagicMock(return_value=1)
         rp.transform_cs = MagicMock(return_value=fake_zip)
         rp.process_zip = MagicMock(return_value=True)
 
         response = rp.process("some_made_up_id")
 
-        rp.transform_cs.assert_called_with(1, fake_response)
+        rp.transform_cs.assert_called_with(1, self.survey)
         rp.process_zip.assert_called_with(settings.FTP_FOLDER, fake_zip)
         self.assertTrue(response)
 
     def test_transform_xml_failure(self):
-        fake_response = json.loads(self.XML_RESPONSE)
-
         fake_xml = {"content": "<xml>some-random-content</xml>"}
 
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.census)
         rp.get_sequence_no = MagicMock(return_value=1)
         rp.transform_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=False)
@@ -139,12 +115,10 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertFalse(response)
 
     def test_transform_xml_success(self):
-        fake_response = json.loads(self.XML_RESPONSE)
-
         fake_xml = {"content": "<xml>some-random-content</xml>"}
 
         rp = ResponseProcessor(logger)
-        rp.get_doc_from_store = MagicMock(return_value=fake_response)
+        rp.get_doc_from_store = MagicMock(return_value=self.census)
         rp.get_sequence_no = MagicMock(return_value=1)
         rp.transform_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=True)
@@ -154,20 +128,24 @@ class TestResponseProcessor(unittest.TestCase):
         self.assertTrue(response)
 
     def test_get_ftp_folder_no_heartbeat(self):
-        survey = json.loads(survey_no_heartbeat)
-        folder = get_ftp_folder(survey)
-
+        folder = get_ftp_folder(self.survey)
         self.assertEqual(folder, settings.FTP_FOLDER)
 
     def test_get_ftp_folder_heartbeat_false(self):
-        survey = json.loads(survey_heartbeat_true)
-        survey['heartbeat'] = False
-        folder = get_ftp_folder(survey)
-
+        self.add_heartbeat()
+        self.survey["heartbeat"] = False
+        folder = get_ftp_folder(self.survey)
         self.assertEqual(folder, settings.FTP_FOLDER)
 
     def test_get_ftp_folder_heartbeat_true(self):
-        survey = json.loads(survey_heartbeat_true)
-        folder = get_ftp_folder(survey)
-
+        self.add_heartbeat()
+        folder = get_ftp_folder(self.survey)
         self.assertEqual(folder, settings.FTP_HEARTBEAT_FOLDER)
+
+    def test_is_census_transform_false(self):
+        is_census = is_census_transform(self.survey)
+        self.assertEqual(is_census, False)
+
+    def test_is_census_transform_true(self):
+        is_census = is_census_transform(self.census)
+        self.assertEqual(is_census, True)
