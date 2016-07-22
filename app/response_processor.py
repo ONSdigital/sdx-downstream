@@ -13,13 +13,22 @@ def connect_to_ftp():
     return ftp
 
 
+def get_ftp_folder(survey_response):
+    if 'heartbeat' in survey_response and survey_response['heartbeat'] is True:
+        return settings.FTP_HEARTBEAT_FOLDER
+    else:
+        return settings.FTP_FOLDER
+
+
+# TODO: is this method needed? I can't find where it is used
 def deliver_ascii_to_ftp(ftp, filename, data):
     stream = io.StringIO(data)
     ftp.storlines('STOR ' + filename, stream)
 
 
-def deliver_binary_to_ftp(ftp, filename, data):
+def deliver_binary_to_ftp(ftp, folder, filename, data):
     stream = io.BytesIO(data)
+    ftp.cwd(folder)
     ftp.storbinary('STOR ' + filename, stream)
 
 
@@ -72,7 +81,8 @@ class ResponseProcessor:
                 zip_contents = self.transform_cs(sequence_no, survey_response)
 
                 if zip_contents:
-                    processed_ok = self.process_zip(zip_contents)
+                    folder = get_ftp_folder(survey_response)
+                    processed_ok = self.process_zip(folder, zip_contents)
 
                 return processed_ok
 
@@ -122,7 +132,7 @@ class ResponseProcessor:
 
         return r.content
 
-    def process_zip(self, zip_contents):
+    def process_zip(self, folder, zip_contents):
         """Method to process the content of a common software response
 
         :rtype boolean: Whether the zip was unarchived successfully
@@ -135,9 +145,9 @@ class ResponseProcessor:
             for filename in z.namelist():
                 if filename.endswith('/'):
                     continue
-                self.logger.debug("Processing file from zip", filename=filename)
+                self.logger.debug("Processing file from zip", folder=folder, filename=filename)
                 edc_file = z.open(filename)
-                deliver_binary_to_ftp(ftp, filename, edc_file.read())
+                deliver_binary_to_ftp(ftp, folder, filename, edc_file.read())
             ftp.quit()
             return True
 
