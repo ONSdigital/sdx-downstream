@@ -14,14 +14,16 @@ class Consumer(AsyncConsumer):
 
         logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id, body=body)
 
-        try:
-            processor = ResponseProcessor(logger)
-            proccessed_ok = processor.process(body.decode("utf-8"))
+        processor = ResponseProcessor(logger)
 
-            if proccessed_ok:
-                self.acknowledge_message(basic_deliver.delivery_tag)
+        try:
+            processed_ok = processor.process(body.decode("utf-8"))
+
+            if processed_ok:
+                self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
+
         except Exception as e:
-            logger.error("ResponseProcessor failed", exception=e)
+            logger.error("ResponseProcessor failed", exception=e, tx_id=processor.tx_id)
 
 
 def main():

@@ -35,6 +35,15 @@ def deliver_binary_to_ftp(ftp, folder, filename, data):
 class ResponseProcessor:
     def __init__(self, logger):
         self.logger = logger
+        self.tx_id = ""
+
+    def response_ok(self, res):
+        if res.status_code == 200:
+            self.logger.info("Returned from service", request_url=res.url, status_code=res.status_code)
+            return True
+        else:
+            self.logger.error("Returned from service", request_url=res.url, status_code=res.status_code)
+            return False
 
     def remote_call(self, request_url, json=None):
         try:
@@ -51,25 +60,24 @@ class ResponseProcessor:
         except MaxRetryError:
             self.logger.error("Max retries exceeded (5)", request_url=request_url)
 
-    def response_ok(self, res):
-        if res.status_code == 200:
-            self.logger.info("Returned from service", request_url=res.url, status_code=res.status_code)
-            return True
-        else:
-            self.logger.error("Returned from service", request_url=res.url, status_code=res.status_code)
-            return False
-
     def process(self, mongoid):
         processed_ok = False
         survey_response = self.get_doc_from_store(mongoid)
 
         if survey_response:
-            metadata = survey_response['metadata']
             # Update consumers logger to use bound vars
+            metadata = survey_response['metadata']
+
             self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
+
+            if 'tx_id' in survey_response:
+                self.tx_id = survey_response['tx_id']
+                self.logger = self.logger.bind(tx_id=self.tx_id)
+
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
+
             if 'file-type' in survey_response and survey_response['file-type'] == 'xml':
                 xml_content = self.transform_xml(survey_response)
 
