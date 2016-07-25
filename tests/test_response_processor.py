@@ -4,7 +4,7 @@ import json
 from app import settings
 from unittest.mock import MagicMock
 from structlog import wrap_logger
-from app.response_processor import ResponseProcessor, get_ftp_folder, is_census_transform
+from app.response_processor import ResponseProcessor, get_ftp_folder, is_census
 from tests.test_data import survey_census, survey_023
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -142,10 +142,10 @@ class TestResponseProcessor(unittest.TestCase):
         folder = get_ftp_folder(self.survey)
         self.assertEqual(folder, settings.FTP_HEARTBEAT_FOLDER)
 
-    def test_is_census_transform_false(self):
-        is_census = is_census_transform(self.survey)
-        self.assertEqual(is_census, False)
+    def test_is_census_false(self):
+        result = is_census(self.survey)
+        self.assertEqual(result, False)
 
-    def test_is_census_transform_true(self):
-        is_census = is_census_transform(self.census)
-        self.assertEqual(is_census, True)
+    def test_is_census_true(self):
+        result = is_census(self.census)
+        self.assertEqual(result, True)
