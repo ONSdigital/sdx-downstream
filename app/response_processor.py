@@ -13,11 +13,22 @@ def connect_to_ftp():
     return ftp
 
 
-def get_ftp_folder(survey_response):
-    if 'heartbeat' in survey_response and survey_response['heartbeat'] is True:
+def get_ftp_folder(survey):
+    if 'heartbeat' in survey and survey['heartbeat'] is True:
         return settings.FTP_HEARTBEAT_FOLDER
     else:
         return settings.FTP_FOLDER
+
+
+def is_census(survey):
+    s_id = survey['survey_id']
+    s_instrument_id = survey['collection']['instrument_id']
+
+    survey_identifier = "{0}.{1}".format(s_id, s_instrument_id)
+    if survey_identifier == settings.CENSUS_IDENTIFIER:
+        return True
+    else:
+        return False
 
 
 # TODO: is this method needed? I can't find where it is used
@@ -77,8 +88,7 @@ class ResponseProcessor:
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
-
-            if 'file-type' in survey_response and survey_response['file-type'] == 'xml':
+            if is_census(survey_response):
                 xml_content = self.transform_xml(survey_response)
 
                 if xml_content:
