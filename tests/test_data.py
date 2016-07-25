@@ -1,5 +1,6 @@
 survey_census = '''
 {
+  "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
   "type": "uk.gov.ons.edc.eq:surveyresponse",
   "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
@@ -23,8 +24,9 @@ survey_census = '''
 }
 '''
 
-survey_023 = '''
+survey_with_tx_id = '''
 {
+  "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
   "type": "uk.gov.ons.edc.eq:surveyresponse",
   "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
