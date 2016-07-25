@@ -20,7 +20,7 @@ def get_ftp_folder(survey):
         return settings.FTP_FOLDER
 
 
-def is_census_transform(survey):
+def is_census(survey):
     s_id = survey['survey_id']
     s_instrument_id = survey['collection']['instrument_id']
 
@@ -88,7 +88,7 @@ class ResponseProcessor:
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
-            if is_census_transform(survey_response):
+            if is_census(survey_response):
                 xml_content = self.transform_xml(survey_response)
 
                 if xml_content:
