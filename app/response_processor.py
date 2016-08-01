@@ -2,9 +2,9 @@ from app import settings
 from app.settings import session
 import zipfile
 import io
-import pika
 from ftplib import FTP
 from requests.packages.urllib3.exceptions import MaxRetryError
+from app.queue_publisher import QueuePublisher
 
 
 def connect_to_ftp():
@@ -179,18 +179,5 @@ class ResponseProcessor:
         :rtype boolean: Whether the queue was notified successfully
 
         """
-        try:
-            self.logger.debug("XML Queueing Start")
-            connection = pika.BlockingConnection(pika.URLParameters(settings.RABBIT_URL))
-            channel = connection.channel()
-            channel.queue_declare(queue=settings.RABBIT_QUEUE_TESTFORM)
-            channel.basic_publish(exchange='',
-                                  properties=pika.BasicProperties(content_type='application/xml'),
-                                  routing_key=settings.RABBIT_QUEUE_TESTFORM,
-                                  body=survey_xml)
-            self.logger.debug("XML Queuing Success")
-            connection.close()
-            return True
-        except:
-            self.logger.error("XML Queuing Failed")
-            return False
+        publisher = QueuePublisher(self.logger, settings.RABBIT_URLS, settings.RABBIT_QUEUE_TESTFORM)
+        return publisher.publish_message(survey_xml, 'application/xml')
