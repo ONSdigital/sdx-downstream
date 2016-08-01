@@ -20,12 +20,23 @@ def get_ftp_folder(survey):
         return settings.FTP_FOLDER
 
 
-def is_census(survey):
+def is_ce_census(survey):
     s_id = survey['survey_id']
     s_instrument_id = survey['collection']['instrument_id']
 
     survey_identifier = "{0}.{1}".format(s_id, s_instrument_id)
-    if survey_identifier == settings.CENSUS_IDENTIFIER:
+    if survey_identifier == settings.CENSUS_CE_IDENTIFIER:
+        return True
+    else:
+        return False
+
+
+def is_hh_census(survey):
+    s_id = survey['survey_id']
+    s_instrument_id = survey['collection']['instrument_id']
+
+    survey_identifier = "{0}.{1}".format(s_id, s_instrument_id)
+    if survey_identifier == settings.CENSUS_HH_IDENTIFIER:
         return True
     else:
         return False
@@ -88,8 +99,15 @@ class ResponseProcessor:
             sequence_no = self.get_sequence_no()
 
         if survey_response and sequence_no:
-            if is_census(survey_response):
-                xml_content = self.transform_xml(survey_response)
+            if is_ce_census(survey_response):
+                xml_content = self.transform_ce_xml(survey_response)
+
+                if xml_content:
+                    processed_ok = self.notify_queue(xml_content)
+
+                return processed_ok
+            elif is_hh_census(survey_response):
+                xml_content = self.transform_hh_xml(survey_response)
 
                 if xml_content:
                     processed_ok = self.notify_queue(xml_content)
@@ -141,8 +159,17 @@ class ResponseProcessor:
 
         return r.content
 
-    def transform_xml(self, survey_response):
-        transform_url = "%s/xml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
+    def transform_ce_xml(self, survey_response):
+        transform_url = "%s/cexml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
+        r = self.remote_call(transform_url, json=survey_response)
+
+        if not self.response_ok(r):
+            return False
+
+        return r.content
+
+    def transform_hh_xml(self, survey_response):
+        transform_url = "%s/hhxml" % (settings.SDX_TRANSFORM_TESTFORM_URL)
         r = self.remote_call(transform_url, json=survey_response)
 
         if not self.response_ok(r):
