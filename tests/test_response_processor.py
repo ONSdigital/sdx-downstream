@@ -4,8 +4,8 @@ import json
 from app import settings
 from unittest.mock import MagicMock
 from structlog import wrap_logger
-from app.response_processor import ResponseProcessor, get_ftp_folder, is_census
-from tests.test_data import survey_census, survey_with_tx_id
+from app.response_processor import ResponseProcessor, get_ftp_folder, is_ce_census, is_hh_census
+from tests.test_data import survey_ce_census, survey_hh_census, survey_with_tx_id
 
 logger = wrap_logger(logging.getLogger(__name__))
 
@@ -100,28 +100,56 @@ class TestResponseProcessor(unittest.TestCase):
         rp.process_zip.assert_called_with(settings.FTP_FOLDER, fake_zip)
         self.assertTrue(response)
 
-    def test_transform_xml_failure(self):
-        census = json.loads(survey_census)
+    def test_transform_ce_xml_failure(self):
+        census = json.loads(survey_ce_census)
         fake_xml = {"content": "<xml>some-random-content</xml>"}
 
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=census)
         rp.get_sequence_no = MagicMock(return_value=1)
-        rp.transform_xml = MagicMock(return_value=fake_xml)
+        rp.transform_ce_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
         rp.notify_queue.assert_called_with(fake_xml)
         self.assertFalse(response)
 
-    def test_transform_xml_success(self):
-        census = json.loads(survey_census)
+    def test_transform_ce_xml_success(self):
+        census = json.loads(survey_ce_census)
         fake_xml = {"content": "<xml>some-random-content</xml>"}
 
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=census)
         rp.get_sequence_no = MagicMock(return_value=1)
-        rp.transform_xml = MagicMock(return_value=fake_xml)
+        rp.transform_ce_xml = MagicMock(return_value=fake_xml)
+        rp.notify_queue = MagicMock(return_value=True)
+
+        response = rp.process("some_made_up_id")
+        rp.notify_queue.assert_called_with(fake_xml)
+        self.assertTrue(response)
+
+    def test_transform_hh_xml_failure(self):
+        census = json.loads(survey_hh_census)
+        fake_xml = {"content": "<xml>some-random-content</xml>"}
+
+        rp = ResponseProcessor(logger)
+        rp.get_doc_from_store = MagicMock(return_value=census)
+        rp.get_sequence_no = MagicMock(return_value=1)
+        rp.transform_hh_xml = MagicMock(return_value=fake_xml)
+        rp.notify_queue = MagicMock(return_value=False)
+
+        response = rp.process("some_made_up_id")
+        rp.notify_queue.assert_called_with(fake_xml)
+        self.assertFalse(response)
+
+    def test_transform_hh_xml_success(self):
+        census = json.loads(survey_hh_census)
+        fake_xml = {"content": "<xml>some-random-content</xml>"}
+
+        rp = ResponseProcessor(logger)
+        rp.get_doc_from_store = MagicMock(return_value=census)
+        rp.get_sequence_no = MagicMock(return_value=1)
+        rp.transform_hh_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=True)
 
         response = rp.process("some_made_up_id")
@@ -148,12 +176,22 @@ class TestResponseProcessor(unittest.TestCase):
         folder = get_ftp_folder(survey)
         self.assertEqual(folder, settings.FTP_HEARTBEAT_FOLDER)
 
-    def test_is_census_false(self):
+    def test_is_ce_census_false(self):
         survey = json.loads(survey_with_tx_id)
-        result = is_census(survey)
+        result = is_ce_census(survey)
         self.assertEqual(result, False)
 
-    def test_is_census_true(self):
-        census = json.loads(survey_census)
-        result = is_census(census)
+    def test_is_ce_census_true(self):
+        census = json.loads(survey_ce_census)
+        result = is_ce_census(census)
+        self.assertEqual(result, True)
+
+    def test_is_hh_census_false(self):
+        survey = json.loads(survey_with_tx_id)
+        result = is_hh_census(survey)
+        self.assertEqual(result, False)
+
+    def test_is_hh_census_true(self):
+        census = json.loads(survey_hh_census)
+        result = is_hh_census(census)
         self.assertEqual(result, True)
