@@ -4,7 +4,7 @@ import json
 from app import settings
 from unittest.mock import MagicMock
 from structlog import wrap_logger
-from app.response_processor import ResponseProcessor, get_ftp_folder, is_ce_census, is_hh_census
+from app.response_processor import ResponseProcessor, get_ftp_folder, is_census_type
 from tests.test_data import survey_ce_census, survey_hh_census, survey_with_tx_id
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -107,7 +107,7 @@ class TestResponseProcessor(unittest.TestCase):
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=census)
         rp.get_sequence_no = MagicMock(return_value=1)
-        rp.transform_ce_xml = MagicMock(return_value=fake_xml)
+        rp.transform_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
@@ -121,7 +121,7 @@ class TestResponseProcessor(unittest.TestCase):
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=census)
         rp.get_sequence_no = MagicMock(return_value=1)
-        rp.transform_ce_xml = MagicMock(return_value=fake_xml)
+        rp.transform_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=True)
 
         response = rp.process("some_made_up_id")
@@ -135,7 +135,7 @@ class TestResponseProcessor(unittest.TestCase):
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=census)
         rp.get_sequence_no = MagicMock(return_value=1)
-        rp.transform_hh_xml = MagicMock(return_value=fake_xml)
+        rp.transform_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=False)
 
         response = rp.process("some_made_up_id")
@@ -149,7 +149,7 @@ class TestResponseProcessor(unittest.TestCase):
         rp = ResponseProcessor(logger)
         rp.get_doc_from_store = MagicMock(return_value=census)
         rp.get_sequence_no = MagicMock(return_value=1)
-        rp.transform_hh_xml = MagicMock(return_value=fake_xml)
+        rp.transform_xml = MagicMock(return_value=fake_xml)
         rp.notify_queue = MagicMock(return_value=True)
 
         response = rp.process("some_made_up_id")
@@ -176,22 +176,18 @@ class TestResponseProcessor(unittest.TestCase):
         folder = get_ftp_folder(survey)
         self.assertEqual(folder, settings.FTP_HEARTBEAT_FOLDER)
 
-    def test_is_ce_census_false(self):
+    def test_is_census_false(self):
         survey = json.loads(survey_with_tx_id)
-        result = is_ce_census(survey)
+        result = is_census_type(survey, settings.CENSUS_CE_IDENTIFIER)
         self.assertEqual(result, False)
 
-    def test_is_ce_census_true(self):
+    def test_ce_is_census_true(self):
         census = json.loads(survey_ce_census)
-        result = is_ce_census(census)
+        result = is_census_type(census, settings.CENSUS_CE_IDENTIFIER)
         self.assertEqual(result, True)
 
-    def test_is_hh_census_false(self):
-        survey = json.loads(survey_with_tx_id)
-        result = is_hh_census(survey)
-        self.assertEqual(result, False)
-
-    def test_is_hh_census_true(self):
+    def test_hh_is_census_true(self):
         census = json.loads(survey_hh_census)
-        result = is_hh_census(census)
+        logger.debug(settings.CENSUS_HH_IDENTIFIER)
+        result = is_census_type(census, settings.CENSUS_HH_IDENTIFIER)
         self.assertEqual(result, True)
