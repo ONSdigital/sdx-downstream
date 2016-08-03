@@ -8,13 +8,12 @@ class CommonSoftware(object):
     def __init__(self, survey):
         self.survey = survey
 
-    def transform(self):
+    def get_url(self):
         sequence_no = get_sequence_no()
-        if sequence_no is False:
-            return False
+        return "{0}/common-software/{1}".format(settings.SDX_TRANSFORM_CS_URL, sequence_no)
 
-        url = "{0}/common-software/{1}".format(settings.SDX_TRANSFORM_CS_URL, sequence_no)
-        response = remote_call(url, json=self.survey)
+    def transform(self):
+        response = remote_call(self.get_url(), json=self.survey)
         if not response_ok(response):
             return False
 

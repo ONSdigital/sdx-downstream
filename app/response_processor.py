@@ -1,6 +1,10 @@
-from app.settings import logger
-from app.transforms.transform_factory import TransformFactory
+from app.settings import logger, CENSUS_ID, COMMON_SOFTWARE_ID
 from app.helpers.request_helper import get_doc_from_store
+from app.transforms.common_software import CommonSoftware
+from app.transforms.census import Census
+
+TRANSFORM_MAP = {COMMON_SOFTWARE_ID: CommonSoftware,
+                 CENSUS_ID: Census}
 
 
 class ResponseProcessor:
@@ -9,15 +13,27 @@ class ResponseProcessor:
         self.tx_id = None
 
     def process(self, mongoid):
-        processed_ok = False
         survey = get_doc_from_store(mongoid)
+        if survey is False:
+            return False
 
-        if survey:
-            self.setup_logger(survey)
-            transform = TransformFactory.get_transform(survey)
-            processed_ok = transform.process()
+        self.setup_logger(survey)
 
-        return processed_ok
+        transform = self.get_transform(survey)
+        if transform is False:
+            return False
+
+        return transform.process()
+
+    def get_transform(self, survey):
+        try:
+            survey_id = survey['survey_id']
+            mapping = TRANSFORM_MAP[survey_id]
+            return mapping(survey)
+
+        except KeyError as e:
+            logger.error("Unable to get transform for survey id", exception=e)
+            return False
 
     def setup_logger(self, survey):
         if survey:

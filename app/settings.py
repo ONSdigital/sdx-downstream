@@ -14,8 +14,8 @@ logger = wrap_logger(logging.getLogger(__name__))
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
 
-CENSUS_CE_IDENTIFIER = "0.ce2016"
-CENSUS_HH_IDENTIFIER = "0.hh2016"
+CENSUS_ID = "0"
+COMMON_SOFTWARE_ID = "023"
 
 # Default to true, cast to boolean
 SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000")
