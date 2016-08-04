@@ -1,13 +1,10 @@
 from app import settings
-from app.settings import logger
 from app.helpers.request_helper import remote_call, response_ok
+from app.processors.survey_processor import SurveyProcessor
 from app.queue_publisher import QueuePublisher
 
 
-class Census(object):
-
-    def __init__(self, survey):
-        self.survey = survey
+class CensusProcessor(SurveyProcessor):
 
     def get_url(self):
         return "{0}/census".format(settings.SDX_TRANSFORM_TESTFORM_URL)
@@ -24,5 +21,5 @@ class Census(object):
         if survey_xml is False:
             return False
 
-        publisher = QueuePublisher(logger, settings.RABBIT_URLS, settings.RABBIT_QUEUE_TESTFORM)
+        publisher = QueuePublisher(self.logger, settings.RABBIT_URLS, settings.RABBIT_QUEUE_TESTFORM)
         return publisher.publish_message(survey_xml, 'application/xml')

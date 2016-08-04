@@ -1,12 +1,10 @@
 from app import settings
 from app.helpers.request_helper import remote_call, response_ok, get_sequence_no
 from app.helpers.ftp_helper import get_ftp_folder, process_zip_to_ftp
+from app.processors.survey_processor import SurveyProcessor
 
 
-class CommonSoftware(object):
-
-    def __init__(self, survey):
-        self.survey = survey
+class CommonSoftwareProcessor(SurveyProcessor):
 
     def get_url(self):
         sequence_no = get_sequence_no()

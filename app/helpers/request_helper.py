@@ -34,7 +34,7 @@ def get_sequence_no():
     sequence_url = settings.SDX_SEQUENCE_URL + "/sequence"
     response = remote_call(sequence_url)
     if not response_ok(response):
-        return False
+        return None
 
     result = response.json()
     return result['sequence_no']
@@ -45,7 +45,7 @@ def get_doc_from_store(mongoid):
     response = remote_call(store_url)
 
     if not response_ok(response):
-        return False
+        return None
 
     result = response.json()
     return result['survey_response']
