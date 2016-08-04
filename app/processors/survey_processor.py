@@ -3,11 +3,11 @@ class SurveyProcessor(object):
     def __init__(self, logger, survey):
         self.logger = logger
         self.survey = survey
-        self.setup_logger()
         self.tx_id = None
+        self.setup_logger()
 
     def process(self):
-        raise NotImplementedError("Please implement this method")
+        raise NotImplementedError
 
     def setup_logger(self):
         if self.survey:

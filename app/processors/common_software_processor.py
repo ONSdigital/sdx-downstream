@@ -13,13 +13,13 @@ class CommonSoftwareProcessor(SurveyProcessor):
     def transform(self):
         response = remote_call(self.get_url(), json=self.survey)
         if not response_ok(response):
-            return False
+            return None
 
         return response.content
 
     def process(self):
         zip_contents = self.transform()
-        if zip_contents is False:
+        if zip_contents is None:
             return False
 
         folder = get_ftp_folder(self.survey)

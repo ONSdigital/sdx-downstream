@@ -1,6 +1,5 @@
-from app import settings
+from app.settings import logger, session, SDX_SEQUENCE_URL, SDX_STORE_URL
 from requests.packages.urllib3.exceptions import MaxRetryError
-from app.settings import logger
 
 
 def remote_call(url, json=None):
@@ -9,9 +8,9 @@ def remote_call(url, json=None):
         response = None
 
         if json:
-            response = settings.session.post(url, json=json)
+            response = session.post(url, json=json)
         else:
-            response = settings.session.get(url)
+            response = session.get(url)
 
         return response
 
@@ -31,7 +30,7 @@ def response_ok(response):
 
 
 def get_sequence_no():
-    sequence_url = settings.SDX_SEQUENCE_URL + "/sequence"
+    sequence_url = "{0}/sequence".format(SDX_SEQUENCE_URL)
     response = remote_call(sequence_url)
     if not response_ok(response):
         return None
@@ -41,7 +40,7 @@ def get_sequence_no():
 
 
 def get_doc_from_store(mongoid):
-    store_url = settings.SDX_STORE_URL + "/responses/" + mongoid
+    store_url = "{0}/responses/{1}".format(SDX_STORE_URL, mongoid)
     response = remote_call(store_url)
 
     if not response_ok(response):
