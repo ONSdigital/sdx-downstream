@@ -17,10 +17,13 @@ class CommonSoftwareProcessor(SurveyProcessor):
 
         return response.content
 
+    def handle_zip(self, zip_contents):
+        folder = get_ftp_folder(self.survey)
+        return process_zip_to_ftp(folder, zip_contents)
+
     def process(self):
         zip_contents = self.transform()
         if zip_contents is None:
             return False
 
-        folder = get_ftp_folder(self.survey)
-        return process_zip_to_ftp(folder, zip_contents)
+        return self.handle_zip(zip_contents)

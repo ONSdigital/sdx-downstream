@@ -26,8 +26,8 @@ class Consumer(AsyncConsumer):
     def get_processor(self, survey):
         try:
             survey_id = survey['survey_id']
-            mapping = SURVEY_ID_TO_PROCESSOR[survey_id]
-            return mapping(logger, survey)
+            processor = SURVEY_ID_TO_PROCESSOR[survey_id]
+            return processor(logger, survey)
 
         except KeyError as e:
             logger.error("Unable to get transform for survey id", exception=e)

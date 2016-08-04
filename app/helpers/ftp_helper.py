@@ -38,8 +38,6 @@ def process_zip_to_ftp(folder, zip_contents):
         settings.logger.error("Bad zip file", exception=e)
         return False
 
-    return process_zip_to_ftp()
-
 
 def deliver_binary_to_ftp(ftp, folder, filename, data):
     stream = io.BytesIO(data)
