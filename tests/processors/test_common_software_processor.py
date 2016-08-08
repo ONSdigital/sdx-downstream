@@ -22,12 +22,12 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
 
     def test_process_failure(self):
         self.processor.transform = MagicMock(return_value="success")
-        self.processor.handle_zip = MagicMock(return_value=False)
+        self.processor.deliver_zip = MagicMock(return_value=False)
         result = self.processor.process()
         self.assertFalse(result)
 
     def test_process_success(self):
         self.processor.transform = MagicMock(return_value="success")
-        self.processor.handle_zip = MagicMock(return_value=True)
+        self.processor.deliver_zip = MagicMock(return_value=True)
         result = self.processor.process()
         self.assertTrue(result)

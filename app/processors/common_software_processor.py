@@ -17,7 +17,7 @@ class CommonSoftwareProcessor(SurveyProcessor):
 
         return response.content
 
-    def handle_zip(self, zip_contents):
+    def deliver_zip(self, zip_contents):
         folder = get_ftp_folder(self.survey)
         return process_zip_to_ftp(folder, zip_contents)
 
@@ -26,4 +26,4 @@ class CommonSoftwareProcessor(SurveyProcessor):
         if zip_contents is None:
             return False
 
-        return self.handle_zip(zip_contents)
+        return self.deliver_zip(zip_contents)

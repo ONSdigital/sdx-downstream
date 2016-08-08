@@ -16,7 +16,7 @@ class CensusProcessor(SurveyProcessor):
 
         return response.content
 
-    def handle_xml(self, survey_xml):
+    def deliver_xml(self, survey_xml):
         publisher = QueuePublisher(self.logger, settings.RABBIT_URLS, settings.RABBIT_QUEUE_TESTFORM)
         return publisher.publish_message(survey_xml, 'application/xml')
 
@@ -25,4 +25,4 @@ class CensusProcessor(SurveyProcessor):
         if survey_xml is None:
             return False
 
-        return self.handle_xml(survey_xml)
+        return self.deliver_xml(survey_xml)
