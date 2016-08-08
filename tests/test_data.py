@@ -1,13 +1,13 @@
-survey_census = '''
+ce_census_survey = '''
 {
   "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
   "type": "uk.gov.ons.edc.eq:surveyresponse",
-  "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
+  "version": "0.0.1",
   "survey_id": "0",
   "collection": {
+    "instrument_id": "hh2016",
     "exercise_sid": "hfjdskf",
-    "instrument_id": "ce2016",
     "period": "0616"
   },
   "submitted_at": "2016-03-12T10:39:40Z",
@@ -24,12 +24,12 @@ survey_census = '''
 }
 '''
 
-survey_with_tx_id = '''
+common_software_survey = '''
 {
   "tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb",
   "type": "uk.gov.ons.edc.eq:surveyresponse",
-  "version": "0.0.1",
   "origin": "uk.gov.ons.edc.eq",
+  "version": "0.0.1",
   "survey_id": "023",
   "collection": {
     "exercise_sid": "hfjdskf",

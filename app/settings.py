@@ -1,4 +1,5 @@
 import logging
+from structlog import wrap_logger
 import os
 import requests
 from requests.packages.urllib3.util.retry import Retry
@@ -7,10 +8,11 @@ from requests.adapters import HTTPAdapter
 LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-downstream: %(message)s"
 LOGGING_LEVEL = logging.DEBUG
 
+logging.basicConfig(level=LOGGING_LEVEL, format=LOGGING_FORMAT)
+logger = wrap_logger(logging.getLogger(__name__))
+
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
-
-CENSUS_IDENTIFIER = "0.ce2016"
 
 # Default to true, cast to boolean
 SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000")
