@@ -28,7 +28,12 @@ FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
 FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
 
 RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'sdx-survey-notifications')
+RABBIT_DELAY_QUEUE = os.getenv('RABBIT_DELAY_QUEUE', 'sdx-delayed-survey-notifications')
 RABBIT_QUEUE_TESTFORM = os.getenv('RABBIT_QUEUE_TESTFORM', 'sdx-testform')
+RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+
+QUEUE_RETRY_DELAY_IN_MS = 20000
+QUEUE_MAX_MESSAGE_DELIVERIES = 3
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
