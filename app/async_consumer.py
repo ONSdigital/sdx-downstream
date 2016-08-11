@@ -18,7 +18,7 @@ class AsyncConsumer(object):
     commands that were issued and that should surface in the output as well.
 
     """
-    EXCHANGE = 'message'
+    EXCHANGE = settings.RABBIT_EXCHANGE
     EXCHANGE_TYPE = 'topic'
     QUEUE = settings.RABBIT_QUEUE
 
@@ -229,6 +229,16 @@ class AsyncConsumer(object):
         """
         LOGGER.info('Acknowledging message', delivery_tag=delivery_tag, **kwargs)
         self._channel.basic_ack(delivery_tag)
+
+    def reject_message(self, delivery_tag, **kwargs):
+        """Reject the message delivery from RabbitMQ by sending a
+        Basic.Reject RPC method for the delivery tag.
+
+        :param int delivery_tag: The delivery tag from the Basic.Deliver frame
+
+        """
+        LOGGER.info('Rejecting message', delivery_tag=delivery_tag, **kwargs)
+        self._channel.basic_reject(delivery_tag, requeue=False)
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
         """Invoked by pika when a message is delivered from RabbitMQ. The

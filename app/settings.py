@@ -6,7 +6,7 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-downstream: %(message)s"
-LOGGING_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 
 logging.basicConfig(level=LOGGING_LEVEL, format=LOGGING_FORMAT)
 logger = wrap_logger(logging.getLogger(__name__))
@@ -28,7 +28,12 @@ FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
 FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
 
 RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'sdx-survey-notifications')
+RABBIT_DELAY_QUEUE = os.getenv('RABBIT_DELAY_QUEUE', 'sdx-survey-notifications_delay')
 RABBIT_QUEUE_TESTFORM = os.getenv('RABBIT_QUEUE_TESTFORM', 'sdx-testform')
+RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+
+QUEUE_RETRY_DELAY_IN_MS = 20000
+QUEUE_MAX_MESSAGE_DELIVERIES = 3
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),

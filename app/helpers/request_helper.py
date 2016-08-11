@@ -1,5 +1,6 @@
 from app.settings import logger, session, SDX_SEQUENCE_URL, SDX_STORE_URL
 from requests.packages.urllib3.exceptions import MaxRetryError
+from requests.exceptions import ConnectionError
 
 
 def remote_call(url, json=None):
@@ -17,13 +18,15 @@ def remote_call(url, json=None):
     except MaxRetryError:
         logger.error("Max retries exceeded (5)", request_url=url)
         return False
+    except ConnectionError:
+        logger.error("Connection error", request_url=url)
+        return False
 
 
 def response_ok(response):
     if response.status_code == 200:
         logger.info("Returned from service", request_url=response.url, status_code=response.status_code)
         return True
-
     else:
         logger.error("Returned from service", request_url=response.url, status_code=response.status_code)
         return False

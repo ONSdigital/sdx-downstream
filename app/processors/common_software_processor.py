@@ -12,7 +12,7 @@ class CommonSoftwareProcessor(SurveyProcessor):
 
     def transform(self):
         response = remote_call(self.get_url(), json=self.survey)
-        if not response_ok(response):
+        if not response or not response_ok(response):
             return None
 
         return response.content
