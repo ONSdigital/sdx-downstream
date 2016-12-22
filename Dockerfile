@@ -1,4 +1,4 @@
-FROM onsdigital/flask-crypto
+FROM onsdigital/flask-crypto-queue
 
 ADD app /app
 ADD startup.sh /startup.sh
