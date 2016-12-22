@@ -1,4 +1,4 @@
 pika==0.10.0
-requests==2.10.0
+requests==2.12.4
 six==1.10.0
 structlog==16.1.0
