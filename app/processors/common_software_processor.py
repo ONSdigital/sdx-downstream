@@ -1,10 +1,28 @@
 from app import settings
 from app.helpers.request_helper import remote_call, response_ok, get_sequence_no
 from app.helpers.ftp_helper import get_ftp_folder, process_zip_to_ftp
-from app.processors.survey_processor import SurveyProcessor
 
 
-class CommonSoftwareProcessor(SurveyProcessor):
+class CommonSoftwareProcessor(object):
+
+    def __init__(self, logger, survey):
+        self.logger = logger
+        self.survey = survey
+        self.tx_id = None
+        self.setup_logger()
+
+    def process(self):
+        raise NotImplementedError
+
+    def setup_logger(self):
+        if self.survey:
+            if 'metadata' in self.survey:
+                metadata = self.survey['metadata']
+                self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
+
+            if 'tx_id' in self.survey:
+                self.tx_id = self.survey['tx_id']
+                self.logger = self.logger.bind(tx_id=self.tx_id)
 
     def get_url(self):
         sequence_no = get_sequence_no()

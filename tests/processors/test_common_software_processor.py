@@ -15,6 +15,12 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
         survey = json.loads(common_software_survey)
         self.processor = CommonSoftwareProcessor(logger, survey)
 
+    def test_process_should_raise_not_implemented_error(self):
+        self.assertRaises(NotImplementedError, self.processor.process)
+
+    def test_tx_id_should_be_set(self):
+        self.assertIsNotNone(self.processor.tx_id)
+
     def test_transform_failure(self):
         self.processor.transform = MagicMock(return_value=None)
         result = self.processor.process()

@@ -2,11 +2,7 @@ from app.settings import logger
 from app.async_consumer import AsyncConsumer
 from app.helpers.request_helper import get_doc_from_store
 from app.processors.common_software_processor import CommonSoftwareProcessor
-from app.processors.census_processor import CensusProcessor
 from app import settings
-
-SURVEY_ID_TO_PROCESSOR = {'023': CommonSoftwareProcessor,
-                          '0': CensusProcessor}
 
 
 def get_delivery_count_from_properties(properties):
@@ -29,7 +25,7 @@ class Consumer(AsyncConsumer):
             mongo_id = body.decode("utf-8")
             document = get_doc_from_store(mongo_id)
 
-            processor = self.get_processor(document)
+            processor = CommonSoftwareProcessor(logger, document)
 
             if processor:
                 processed_ok = processor.process()
@@ -42,16 +38,6 @@ class Consumer(AsyncConsumer):
 
         except Exception as e:
             logger.error("ResponseProcessor failed", exception=e, tx_id=processor.tx_id)
-
-    def get_processor(self, survey):
-        try:
-            survey_id = survey['survey_id']
-            processor = SURVEY_ID_TO_PROCESSOR[survey_id]
-            return processor(logger, survey)
-
-        except KeyError as e:
-            logger.error("Unable to get transform for survey id", exception=e)
-            return None
 
 
 def main():
