@@ -11,9 +11,6 @@ class CommonSoftwareProcessor(object):
         self.tx_id = None
         self.setup_logger()
 
-    def process(self):
-        raise NotImplementedError
-
     def setup_logger(self):
         if self.survey:
             if 'metadata' in self.survey:
