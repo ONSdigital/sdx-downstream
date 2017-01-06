@@ -5,7 +5,7 @@
   - Update docker base image to use [onsdigital/flask-crypto-queue](https://hub.docker.com/r/onsdigital/flask-crypto-queue/)
 
 ### 1.0.1 2016-11-10
-  - Fix #16 remove rabbit queue connection details from logs
+  - Fix [#16](https://github.com/ONSdigital/sdx-downstream/issues/16) remove rabbit queue connection details from logs
 
 ### 1.0.0 2016-08-11
   - Initial release
