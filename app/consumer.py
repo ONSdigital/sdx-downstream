@@ -7,7 +7,7 @@ from app.processors.common_software_processor import CommonSoftwareProcessor
 class Consumer(AsyncConsumer):
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
-        logger.info('Received message', delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id, body=body.decode("utf-8"))
+        logger.info('Received message', queue=self.QUEUE, delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id, body=body.decode("utf-8"))
 
         try:
             mongo_id = body.decode("utf-8")
