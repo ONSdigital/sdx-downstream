@@ -17,7 +17,7 @@ class Consumer(AsyncConsumer):
 
             processed_ok = processor.process()
             if processed_ok:
-                logger.info("Processed successfully", tx_id=processsor.tx_id)
+                logger.info("Processed successfully", tx_id=processor.tx_id)
                 self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
 
         except Exception as e:
