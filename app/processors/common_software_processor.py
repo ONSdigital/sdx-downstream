@@ -34,7 +34,7 @@ class CommonSoftwareProcessor(object):
 
     def deliver_zip(self, zip_contents):
         folder = get_ftp_folder(self.survey)
-        return process_zip_to_ftp(folder, zip_contents)
+        return process_zip_to_ftp(self.logger, folder, zip_contents)
 
     def process(self):
         zip_contents = self.transform()
