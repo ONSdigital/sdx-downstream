@@ -19,7 +19,7 @@ class SDXFTP(object):
         """
         if self._conn is None:
             # No connection at all
-            self.logger.info("Establishing new ftp connection", host=self.host)
+            self.logger.info("Establishing new FTP connection", host=self.host)
             return self._connect()
         else:
             try:
