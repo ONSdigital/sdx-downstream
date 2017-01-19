@@ -1,6 +1,6 @@
 from app import settings
 from app.helpers.request_helper import remote_call, response_ok, get_sequence_no
-from app.helpers.ftp_helper import get_ftp_folder, process_zip_to_ftp
+import SDXFTP
 
 
 class CommonSoftwareProcessor(object):
@@ -10,6 +10,8 @@ class CommonSoftwareProcessor(object):
         self.survey = survey
         self.tx_id = None
         self.setup_logger()
+        self.ftp = SDXFTP(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
+        return
 
     def setup_logger(self):
         if self.survey:
@@ -33,8 +35,8 @@ class CommonSoftwareProcessor(object):
         return response.content
 
     def deliver_zip(self, zip_contents):
-        folder = get_ftp_folder(self.survey)
-        return process_zip_to_ftp(folder, zip_contents)
+        folder = self.get_ftp_folder(self.survey)
+        return self.ftp.unzip_and_deliver(folder, zip_contents)
 
     def process(self):
         zip_contents = self.transform()
@@ -42,3 +44,9 @@ class CommonSoftwareProcessor(object):
             return False
 
         return self.deliver_zip(zip_contents)
+
+    def get_ftp_folder(self, survey):
+        if 'heartbeat' in survey and survey['heartbeat'] is True:
+            return settings.FTP_HEARTBEAT_FOLDER
+        else:
+            return settings.FTP_FOLDER
