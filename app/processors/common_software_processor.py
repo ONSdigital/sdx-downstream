@@ -1,6 +1,6 @@
 from app import settings
 from app.helpers.request_helper import remote_call, response_ok, get_sequence_no
-import SDXFTP
+from app.helpers.sdxftp import SDXFTP
 
 
 class CommonSoftwareProcessor(object):
@@ -10,7 +10,7 @@ class CommonSoftwareProcessor(object):
         self.survey = survey
         self.tx_id = None
         self.setup_logger()
-        self.ftp = SDXFTP(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
+        self.ftp = SDXFTP(self.logger, settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
         return
 
     def setup_logger(self):
