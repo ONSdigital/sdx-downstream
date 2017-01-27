@@ -1,4 +1,5 @@
 ### Unreleased
+  - Make queue durable
   - Add change log
   - Remove publishing to delay queue on failure
   - Fix [#23](https://github.com/ONSdigital/sdx-downstream/issues/23) by removing redundant census processor - now lives under [sdx-downstream-ctp](https://github.com/ONSdigital/sdx-downstream-ctp)
