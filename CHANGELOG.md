@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add persistent ftp connection
   - Make queue durable
   - Add change log
   - Remove publishing to delay queue on failure

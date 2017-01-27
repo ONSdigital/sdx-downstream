@@ -1,6 +1,5 @@
 from app import settings
 from app.helpers.request_helper import remote_call, response_ok, get_sequence_no
-from app.helpers.sdxftp import SDXFTP
 
 
 class CommonSoftwareProcessor(object):
