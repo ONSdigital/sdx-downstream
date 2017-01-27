@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 import json
 import logging
+from app import settings
 from structlog import wrap_logger
 from app.processors.common_software_processor import CommonSoftwareProcessor
 from tests.test_data import common_software_survey
@@ -34,3 +35,21 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
         self.processor.deliver_zip = MagicMock(return_value=True)
         result = self.processor.process()
         self.assertTrue(result)
+
+    # FTP FOLDER
+    def test_get_ftp_folder_no_heartbeat(self):
+        survey = json.loads(common_software_survey)
+        folder = self.processor.get_ftp_folder(survey)
+        self.assertEqual(folder, settings.FTP_FOLDER)
+
+    def test_get_ftp_folder_heartbeat_false(self):
+        survey = json.loads(common_software_survey)
+        survey["heartbeat"] = False
+        folder = self.processor.get_ftp_folder(survey)
+        self.assertEqual(folder, settings.FTP_FOLDER)
+
+    def test_get_ftp_folder_heartbeat_true(self):
+        survey = json.loads(common_software_survey)
+        survey["heartbeat"] = True
+        folder = self.processor.get_ftp_folder(survey)
+        self.assertEqual(folder, settings.FTP_HEARTBEAT_FOLDER)
