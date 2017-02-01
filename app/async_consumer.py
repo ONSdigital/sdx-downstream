@@ -291,6 +291,7 @@ class AsyncConsumer(object):
         """
         LOGGER.info('Issuing consumer related RPC commands')
         self.add_on_cancel_callback()
+        self._channel.basic_qos(prefetch_count=1)
         self._consumer_tag = self._channel.basic_consume(self.on_message,
                                                          self.QUEUE)
 
