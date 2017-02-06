@@ -16,8 +16,8 @@ class Consumer(AsyncConsumer):
         logger.info("Received message", queue=self.QUEUE, delivery_tag=basic_deliver.delivery_tag, app_id=properties.app_id)
 
         try:
-            mongo_id = body.decode("utf-8")
-            document = get_doc_from_store(mongo_id)
+            tx_id = body.decode("utf-8")
+            document = get_doc_from_store(tx_id)
 
             processor = CommonSoftwareProcessor(logger, document, self._ftp)
 
