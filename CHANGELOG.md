@@ -8,6 +8,7 @@
   - Update docker base image to use [onsdigital/flask-crypto-queue](https://hub.docker.com/r/onsdigital/flask-crypto-queue/)
   - Remove reject on max retries. Stops message being rejected if endpoint is down for prolonged period
   - Add queue name to log message and remove dump of payload
+  - Add `prefetch` to rabbit consumer to address '104 Socket' errors
 
 ### 1.0.1 2016-11-10
   - Fix [#16](https://github.com/ONSdigital/sdx-downstream/issues/16) remove rabbit queue connection details from logs
