@@ -49,8 +49,8 @@ class CommonSoftwareProcessor(object):
 
         if response.status_code == 400 or response.content is None:
             # There was an issue with the data. This would imply the data was
-            # corrupt or wrong in some way that means it cannot be trabsformed
-            self.logger.error("Failed to transform", request_url=endpoint, sestatus_code=response.status_code)
+            # corrupt or wrong in some way that means it cannot be transformed
+            self.logger.error("Failed to transform", request_url=endpoint, status_code=response.status_code)
             raise BadMessageError("Failure to transform")
 
         elif response.status_code != 200:
