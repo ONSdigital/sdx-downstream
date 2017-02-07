@@ -27,9 +27,6 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
         response._content = b'Some content'
         return response
 
-    def test_tx_id_should_be_set(self):
-        self.assertIsNotNone(self.processor.tx_id)
-
     def test_transform(self):
         with mock.patch('app.processors.common_software_processor.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
