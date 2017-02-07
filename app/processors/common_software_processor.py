@@ -9,6 +9,7 @@ class CommonSoftwareProcessor(object):
         self.logger = logger
         self.survey = survey
         self._setup_logger()
+        self.tx_id = ""
         self.ftp = ftpconn
         return
 
@@ -30,8 +31,8 @@ class CommonSoftwareProcessor(object):
                 self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
 
             if 'tx_id' in self.survey:
-                tx_id = self.survey['tx_id']
-                self.logger = self.logger.bind(tx_id=tx_id)
+                self.tx_id = self.survey['tx_id']
+                self.logger = self.logger.bind(tx_id=self.tx_id)
 
     def _get_url(self):
         sequence_no = get_sequence_no()
