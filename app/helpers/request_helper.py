@@ -36,6 +36,7 @@ def get_sequence_no():
     sequence_url = "{0}/sequence".format(SDX_SEQUENCE_URL)
     response = remote_call(sequence_url)
     if not response_ok(response):
+        logger.error("Failed to get sequence number", request_url=sequence_url)
         return None
 
     result = response.json()

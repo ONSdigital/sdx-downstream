@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add explicit ack/nack for messages based on processing success
   - Add persistent ftp connection
   - Make queue durable
   - Add change log
