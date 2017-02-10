@@ -43,16 +43,16 @@ class Consumer(AsyncConsumer):
         try:
             processor.process()
             self.acknowledge_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
-            logger.info("Processed successfully")
+            processor.logger.info("Processed successfully")
 
         except BadMessageError as e:
             # If it's a bad message then we have to reject it
             self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
-            logger.error("Bad message", action="rejected", exception=e, delivery_count=delivery_count)
+            processor.logger.error("Bad message", action="rejected", exception=e, delivery_count=delivery_count)
 
         except (RetryableError, Exception) as e:
             self.nack_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
-            logger.error("Failed to process", action="nack for retry", exception=e, delivery_count=delivery_count)
+            processor.logger.error("Failed to process", action="nack for retry", exception=e, delivery_count=delivery_count)
 
 
 def main():
