@@ -8,8 +8,8 @@ class CommonSoftwareProcessor(object):
     def __init__(self, logger, survey, ftpconn):
         self.logger = logger
         self.survey = survey
-        self._setup_logger()
         self.tx_id = ""
+        self._setup_logger()
         self.ftp = ftpconn
         return
 
