@@ -1,7 +1,8 @@
 from app.settings import logger, session, SDX_SEQUENCE_URL, SDX_STORE_URL
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-from exceptions import RetryableError
+from app.helpers.exceptions import RetryableError
+
 
 def remote_call(url, json=None):
     try:
