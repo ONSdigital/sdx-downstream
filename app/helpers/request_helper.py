@@ -26,7 +26,7 @@ def remote_call(url, json=None):
 
 def response_ok(response):
     if response is None:
-        logger.error("No response from service", request_url=response.url, status_code=response.status_code)
+        logger.error("No response from service", request_url=response.url)
         return False
     elif response.status_code == 200:
         logger.info("Returned from service", request_url=response.url, status_code=response.status_code)
