@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add explicit ack/nack for messages based on processing success
   - Add persistent ftp connection
   - Make queue durable
   - Add change log
@@ -9,6 +10,7 @@
   - Remove reject on max retries. Stops message being rejected if endpoint is down for prolonged period
   - Add queue name to log message and remove dump of payload
   - Add `prefetch` to rabbit consumer to address '104 Socket' errors
+  - Update env var for queue name
 
 ### 1.0.1 2016-11-10
   - Fix [#16](https://github.com/ONSdigital/sdx-downstream/issues/16) remove rabbit queue connection details from logs
