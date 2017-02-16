@@ -17,7 +17,6 @@ APP_TMP = os.path.join(APP_ROOT, 'tmp')
 # Default to true, cast to boolean
 SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000")
 SDX_TRANSFORM_CS_URL = os.getenv("SDX_TRANSFORM_CS_URL", "http://sdx-transform-cs:5000")
-SDX_TRANSFORM_TESTFORM_URL = os.getenv("SDX_TRANSFORM_TESTFORM_URL", "http://sdx-transform-testform:5000")
 SDX_SEQUENCE_URL = os.getenv("SDX_SEQUENCE_URL", "http://sdx-sequence:5000")
 
 FTP_HOST = os.getenv('FTP_HOST', 'pure-ftpd')
@@ -27,13 +26,8 @@ FTP_PASS = os.getenv('FTP_PASS')
 FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
 FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
 
-RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'sdx-survey-notifications')
-RABBIT_DELAY_QUEUE = os.getenv('RABBIT_DELAY_QUEUE', 'sdx-survey-notifications_delay')
-RABBIT_QUEUE_TESTFORM = os.getenv('RABBIT_QUEUE_TESTFORM', 'sdx-testform')
+RABBIT_QUEUE = os.getenv('CS_NOTIFICATIONS_QUEUE', 'sdx-cs-survey-notifications')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
-
-QUEUE_RETRY_DELAY_IN_MS = 20000
-QUEUE_MAX_MESSAGE_DELIVERIES = 3
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
