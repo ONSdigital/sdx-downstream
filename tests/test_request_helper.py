@@ -5,6 +5,11 @@ from app.helpers import request_helper
 
 class TestSurveyProcessor(unittest.TestCase):
 
+    def test_response_None(self):
+        response = None
+        result = request_helper.response_ok(response)
+        self.assertEqual(result, False)
+
     def test_response_ok_200_return_true(self):
         response = Response()
         response.status_code = 200
