@@ -1,3 +1,4 @@
+from app import __version__
 from app.settings import logger
 from app.async_consumer import AsyncConsumer
 from app.helpers.request_helper import get_doc_from_store
@@ -57,6 +58,7 @@ class Consumer(AsyncConsumer):
 
 def main():
     logger.debug("Starting consumer")
+    logger.info("Current version: {}".format(__version__))
     consumer = Consumer()
     try:
         consumer.run()
