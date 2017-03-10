@@ -1,4 +1,5 @@
 ### Unreleased
+  - Log version number on startup
   - Fix handling of None responses in remote call
   - Change `status_code` to `status` for SDX logging
 
