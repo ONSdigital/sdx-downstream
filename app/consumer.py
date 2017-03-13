@@ -57,8 +57,7 @@ class Consumer(AsyncConsumer):
 
 
 def main():
-    logger.debug("Starting consumer")
-    logger.info("Current version: {}".format(__version__))
+    logger.info("Starting consumer", version=__version__)
     consumer = Consumer()
     try:
         consumer.run()
