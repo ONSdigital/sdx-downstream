@@ -46,4 +46,3 @@ class TestSurveyProcessor(unittest.TestCase):
     def test_service_name_url_none(self):
         url = None
         service = request_helper.service_name(url)
-        self.assertEqual(service, None)
