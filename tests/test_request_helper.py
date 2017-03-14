@@ -27,3 +27,23 @@ class TestSurveyProcessor(unittest.TestCase):
         response.status_code = 500
         result = request_helper.response_ok(response)
         self.assertEqual(result, False)
+
+    def test_url_splitter_return_responses(self):
+        url = "www.testing.test/responses/12345"
+        service = request_helper.url_splitter(url)
+        self.assertEqual(service, 'responses')
+
+    def test_url_splitter_return_rsequence(self):
+        url = "www.testing.test/sequence"
+        service = request_helper.url_splitter(url)
+        self.assertEqual(service, 'sequence')
+
+    def test_url_splitter_return_none(self):
+        url = "www.testing.test/test/12345"
+        service = request_helper.url_splitter(url)
+        self.assertEqual(service, None)
+
+    def test_url_splitter_url_none(self):
+        url = None
+        service = request_helper.url_splitter(url)
+        self.assertEqual(service, None)
