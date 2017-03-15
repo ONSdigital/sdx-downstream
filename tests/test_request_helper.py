@@ -28,22 +28,22 @@ class TestSurveyProcessor(unittest.TestCase):
         result = request_helper.response_ok(response)
         self.assertEqual(result, False)
 
-    def test_url_splitter_return_responses(self):
+    def test_service_name_return_responses(self):
         url = "www.testing.test/responses/12345"
-        service = request_helper.url_splitter(url)
-        self.assertEqual(service, 'responses')
+        service = request_helper.service_name(url)
+        self.assertEqual(service, 'SDX_STORE')
 
-    def test_url_splitter_return_rsequence(self):
+    def test_service_name_return_sequence(self):
         url = "www.testing.test/sequence"
-        service = request_helper.url_splitter(url)
-        self.assertEqual(service, 'sequence')
+        service = request_helper.service_name(url)
+        self.assertEqual(service, 'SDX_SEQUENCE')
 
-    def test_url_splitter_return_none(self):
+    def test_service_name_return_none(self):
         url = "www.testing.test/test/12345"
-        service = request_helper.url_splitter(url)
+        service = request_helper.service_name(url)
         self.assertEqual(service, None)
 
-    def test_url_splitter_url_none(self):
+    def test_service_name_url_none(self):
         url = None
-        service = request_helper.url_splitter(url)
+        service = request_helper.service_name(url)
         self.assertEqual(service, None)

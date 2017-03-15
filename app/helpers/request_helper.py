@@ -4,24 +4,19 @@ from requests.exceptions import ConnectionError
 from app.helpers.exceptions import RetryableError
 
 
-def url_splitter(url=None):
-    if url is not None:
+def service_name(url=None):
+    try:
         parts = url.split('/')
-
         if 'responses' in parts:
-            service = 'responses'
+            return 'SDX_STORE'
         elif 'sequence' in parts:
-            service = 'sequence'
-        else:
-            service = None
-    else:
-        service = None
-
-    return service
+            return 'SDX_SEQUENCE'
+    except AttributeError as e:
+        logger.error(e)
 
 
 def remote_call(url, json=None):
-    service = url_splitter(url)
+    service = service_name(url)
 
     try:
         logger.info("Calling service", request_url=url, service=service)
@@ -43,10 +38,7 @@ def remote_call(url, json=None):
 
 
 def response_ok(response, service_url=None):
-    if service_url is not None:
-        service = url_splitter(service_url)
-    else:
-        service = None
+    service = service_name(service_url)
 
     if response is None:
         logger.error("No response from service")
