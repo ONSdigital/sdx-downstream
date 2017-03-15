@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 2.0.1 2017-03-15
   - Log version number on startup
   - Fix handling of None responses in remote call
   - Change `status_code` to `status` for SDX logging
