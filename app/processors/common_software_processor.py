@@ -50,12 +50,12 @@ class CommonSoftwareProcessor(object):
         if response.status_code == 400 or response.content is None:
             # There was an issue with the data. This would imply the data was
             # corrupt or wrong in some way that means it cannot be transformed
-            self.logger.error("Failed to transform", request_url=endpoint, status_code=response.status_code)
+            self.logger.error("Failed to transform", request_url=endpoint, status=response.status_code)
             raise BadMessageError("Failure to transform")
 
         elif response.status_code != 200:
             # General internal error received from transformer so worth retrying.
-            self.logger.error("Bad response from transformer", request_url=endpoint, status_code=response.status_code)
+            self.logger.error("Bad response from transformer", request_url=endpoint, status=response.status_code)
             raise RetryableError("Failure to transform")
 
         self.logger.info("Successfully transformed")

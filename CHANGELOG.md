@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 2.0.1 2017-03-15
+  - Log version number on startup
+  - Fix handling of None responses in remote call
+  - Change `status_code` to `status` for SDX logging
+
 ### 2.0.0 2017-02-16
   - Add explicit ack/nack for messages based on processing success
   - Add persistent ftp connection
