@@ -1,5 +1,5 @@
 ### Unreleased
-  - Log tx_id for FTP successes or failures
+  - Log tx_id for FTP successes and failures
 
 ### 2.0.1 2017-03-15
   - Log version number on startup
