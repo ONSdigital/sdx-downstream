@@ -8,7 +8,6 @@
   - updating timezoning
   - Update and pin version of sdx-common to 0.7.0
 
-
 ### 2.0.1 2017-03-15
   - Log version number on startup
   - Fix handling of None responses in remote call
