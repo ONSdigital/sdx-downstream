@@ -1,5 +1,6 @@
 ### Unreleased
   - Log tx_id for FTP successes and failures
+  - Add environment variables to README
 
 ### 2.0.1 2017-03-15
   - Log version number on startup
