@@ -76,6 +76,7 @@ class Consumer(AsyncConsumer):
 
 def main():
     logger.info("Starting consumer", version=__version__)
+    check_default_env_vars()
     consumer = Consumer()
     try:
         consumer.run()
