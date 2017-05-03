@@ -6,6 +6,24 @@ from app.processors.common_software_processor import CommonSoftwareProcessor
 from app import settings
 from app.helpers.sdxftp import SDXFTP
 from app.helpers.exceptions import BadMessageError, RetryableError
+import os
+import sys
+
+
+def check_default_env_vars():
+
+    env_vars = ["SDX_STORE_URL", "SDX_TRANSFORM_CS_URL", "SDX_SEQUENCE_URL", "FTP-HOST", "FTP_USER",
+                "FTP_PASS", "FTP_FOLDER", "FTP_HEARTBEAT_FOLDER", "CS_NOTIFICATIONS_QUEUE", "RABBITMQ_EXCHANGE",
+                "RABBITMQ_HOST", "RABBITMQ_PORT", "RABBITMQ_DEFAULT_USER", "RABBITMQ_DEFAULT_PASS",
+                "RABBITMQ_DEFAULT_VHOST", "RABBITMQ_HOST2", "RABBITMQ_PORT2"]
+
+    for i in env_vars:
+        if os.getenv(i) is None:
+            logger.error("No ", i, "env var supplied")
+            missing_env_var = True
+
+    if missing_env_var is True:
+        sys.exit(1)
 
 
 def get_delivery_count_from_properties(properties):

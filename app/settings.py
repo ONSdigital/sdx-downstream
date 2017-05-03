@@ -15,34 +15,34 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
 
 # Default to true, cast to boolean
-SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000")
-SDX_TRANSFORM_CS_URL = os.getenv("SDX_TRANSFORM_CS_URL", "http://sdx-transform-cs:5000")
-SDX_SEQUENCE_URL = os.getenv("SDX_SEQUENCE_URL", "http://sdx-sequence:5000")
+SDX_STORE_URL = os.getenv("SDX_STORE_URL")
+SDX_TRANSFORM_CS_URL = os.getenv("SDX_TRANSFORM_CS_URL")
+SDX_SEQUENCE_URL = os.getenv("SDX_SEQUENCE_URL")
 
-FTP_HOST = os.getenv('FTP_HOST', 'pure-ftpd')
+FTP_HOST = os.getenv('FTP_HOST')
 FTP_USER = os.getenv('FTP_USER')
 FTP_PASS = os.getenv('FTP_PASS')
 
-FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
-FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
+FTP_FOLDER = os.getenv('FTP_FOLDER')
+FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER')
 
-RABBIT_QUEUE = os.getenv('CS_NOTIFICATIONS_QUEUE', 'sdx-cs-survey-notifications')
-RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+RABBIT_QUEUE = os.getenv('CS_NOTIFICATIONS_QUEUE')
+RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
-    hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
-    port=os.getenv('RABBITMQ_PORT', 5672),
-    user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
-    password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
-    vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
+    hostname=os.getenv('RABBITMQ_HOST'),
+    port=os.getenv('RABBITMQ_PORT'),
+    user=os.getenv('RABBITMQ_DEFAULT_USER'),
+    password=os.getenv('RABBITMQ_DEFAULT_PASS'),
+    vhost=os.getenv('RABBITMQ_DEFAULT_VHOST')
 )
 
 RABBIT_URL2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
-    hostname=os.getenv('RABBITMQ_HOST2', 'rabbit'),
-    port=os.getenv('RABBITMQ_PORT2', 5672),
-    user=os.getenv('RABBITMQ_DEFAULT_USER', 'rabbit'),
-    password=os.getenv('RABBITMQ_DEFAULT_PASS', 'rabbit'),
-    vhost=os.getenv('RABBITMQ_DEFAULT_VHOST', '%2f')
+    hostname=os.getenv('RABBITMQ_HOST2'),
+    port=os.getenv('RABBITMQ_PORT2'),
+    user=os.getenv('RABBITMQ_DEFAULT_USER'),
+    password=os.getenv('RABBITMQ_DEFAULT_PASS'),
+    vhost=os.getenv('RABBITMQ_DEFAULT_VHOST')
 )
 
 RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
