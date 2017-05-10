@@ -59,7 +59,7 @@ def get_sequence_no():
         logger.error("Failed to get sequence number", request_url=sequence_url)
         return None
 
-    return response.json()
+    return response.json()['sequence_no']
 
 
 def get_doc_from_store(tx_id):
