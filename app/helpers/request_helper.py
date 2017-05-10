@@ -62,7 +62,6 @@ def get_sequence_no():
     return response.json()['sequence_no']
 
 
-
 def get_doc_from_store(tx_id):
     store_url = "{0}/responses/{1}".format(SDX_STORE_URL, tx_id)
     response = remote_call(store_url)

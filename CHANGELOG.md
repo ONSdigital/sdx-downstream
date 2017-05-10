@@ -1,16 +1,12 @@
 ### Unreleased
   - Log tx_id for FTP successes and failures
   - Add environment variables to README
-<<<<<<< HEAD
   - Add codacy badge
   - Correct license attribution
   - Add support for codecov to see unit test coverage
   - Addings sdx-common functionality
   - updating timezoning
   - Update and pin version of sdx-common to 0.7.0
-=======
-  - Correct license attribution
->>>>>>> Updated README and CHANGELOG
 
 ### 2.0.1 2017-03-15
   - Log version number on startup
