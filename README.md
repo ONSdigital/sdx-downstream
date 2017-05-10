@@ -36,3 +36,9 @@ The following envioronment variables can be set:
 ## Usage
 
 sdx-downstream works as a single consumer which exposes no endpoints. The best way to test its behaviour is to start it within a [docker-compose](https://github.com/ONSdigital/sdx-compose) setup and trigger the consumer through the console.
+
+### License
+
+Copyright © 2016, Office for National Statistics (https://www.ons.gov.uk)
+
+Released under MIT license, see [LICENSE](LICENSE) for details.
