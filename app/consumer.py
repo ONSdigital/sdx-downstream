@@ -6,7 +6,6 @@ from app.processors.common_software_processor import CommonSoftwareProcessor
 from app import settings
 from app.helpers.sdxftp import SDXFTP
 from app.helpers.exceptions import BadMessageError, RetryableError
-import os
 import sys
 
 
@@ -65,7 +64,10 @@ class Consumer(AsyncConsumer):
 
 def main():
     logger.info("Starting consumer", version=__version__)
-    check_default_env_vars()
+    if not check_globals(settings):
+        logger.error("Variables missing from environment.")
+        sys.exit(1)
+
     consumer = Consumer()
     try:
         consumer.run()
