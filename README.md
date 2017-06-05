@@ -1,5 +1,7 @@
 # sdx-downstream
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bf44060d82ee41f49d73729b9150eb99)](https://www.codacy.com/app/ons-sdc/sdx-downstream?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-downstream&amp;utm_campaign=Badge_Grade)
+
 The sdx-downstream app is used within the Office for National Statistics (ONS) for consuming decrypted Survey Data Exchange (SDX) Surveys from sdx-store and delivering them to downstream environments e.g. Common Software.
 
 ## Installation
