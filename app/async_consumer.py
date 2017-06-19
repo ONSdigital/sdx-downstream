@@ -1,7 +1,5 @@
 from app import settings
 import pika
-import logging
-from structlog import wrap_logger
 import time
 
 
