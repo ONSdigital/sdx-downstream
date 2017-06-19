@@ -5,10 +5,10 @@ import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-LOGGING_FORMAT = "%(asctime)s|%(levelname)s: sdx-downstream: %(message)s"
-LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
+from sdx.common.logger_config import logger_initial_config
 
-logging.basicConfig(level=LOGGING_LEVEL, format=LOGGING_FORMAT)
+
+logger_initial_config(service_name='sdx-downstream')
 logger = wrap_logger(logging.getLogger(__name__))
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))

@@ -4,7 +4,8 @@ import logging
 from structlog import wrap_logger
 import time
 
-logger = wrap_logger(logging.getLogger(__name__))
+
+logger = settings.logger
 
 
 class AsyncConsumer(object):

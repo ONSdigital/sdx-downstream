@@ -3,6 +3,8 @@
   - Add environment variables to README
   - Add codacy badge
   - Correct license attribution
+  - Addings sdx-common functionality
+  - updating timezoning
 
 ### 2.0.1 2017-03-15
   - Log version number on startup
