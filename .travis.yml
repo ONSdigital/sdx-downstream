@@ -3,12 +3,11 @@ python:
   - "3.6"
   - "3.5"
   - "3.4"
+before_install:
+  - git clone https://github.com/ONSdigital/sdx-common.git
+  - pip3 install ./sdx-common
 install:
-<<<<<<< HEAD
   - make build
-=======
-  - make
->>>>>>> Add support for codecov
   - pip install codecov
 script:
   - make test
