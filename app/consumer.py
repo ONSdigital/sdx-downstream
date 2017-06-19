@@ -67,7 +67,7 @@ class Consumer(AsyncConsumer):
             processor.logger.error("Bad message", action="rejected", exception=e, delivery_count=delivery_count, tx_id=processor.tx_id)
 
         except (RetryableError, Exception) as e:
-            self.nack_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
+            # self.nack_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
             processor.logger.error("Failed to process", action="nack", exception=e, delivery_count=delivery_count, tx_id=processor.tx_id)
 
 
