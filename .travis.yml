@@ -4,7 +4,11 @@ python:
   - "3.5"
   - "3.4"
 install:
+<<<<<<< HEAD
   - make build
+=======
+  - make
+>>>>>>> Add support for codecov
   - pip install codecov
 script:
   - make test
