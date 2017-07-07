@@ -1,22 +1,15 @@
 dev: check-env
 	cd .. && pip3 uninstall -y sdx-common && pip3 install -I ./sdx-common
-<<<<<<< HEAD
 	pip3 install -r requirements.txt
 
 build:
-<<<<<<< HEAD
 	git clone https://github.com/ONSdigital/sdx-common.git
 	pip3 install ./sdx-common
-=======
->>>>>>> addings common functionality and updating timezoning
 	pip3 install -r requirements.txt
 	rm -rf sdx-common
 
 build:
-	pip3 install -I -r requirements.txt
-=======
 	pip3 install -r requirements.txt
->>>>>>> Remove -I flag that was breaking the build
 	git clone https://github.com/ONSdigital/sdx-common.git
 	pip3 install ./sdx-common
 	rm -rf sdx-common
