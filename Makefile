@@ -4,6 +4,7 @@ dev: check-env
 	pip3 install -r requirements.txt
 
 build:
+<<<<<<< HEAD
 	git clone https://github.com/ONSdigital/sdx-common.git
 	pip3 install ./sdx-common
 =======
@@ -13,6 +14,9 @@ build:
 
 build:
 	pip3 install -I -r requirements.txt
+=======
+	pip3 install -r requirements.txt
+>>>>>>> Remove -I flag that was breaking the build
 	git clone https://github.com/ONSdigital/sdx-common.git
 	pip3 install ./sdx-common
 	rm -rf sdx-common
