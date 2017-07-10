@@ -3,6 +3,7 @@
   - Add environment variables to README
   - Add codacy badge
   - Correct license attribution
+  - Add support for codecov to see unit test coverage
   - Addings sdx-common functionality
   - updating timezoning
   - Update and pin version of sdx-common to 0.7.0
