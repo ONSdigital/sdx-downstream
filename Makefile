@@ -1,10 +1,8 @@
-dev: check-env
+dev:
 	cd .. && pip3 uninstall -y sdx-common && pip3 install -I ./sdx-common
 	pip3 install -r requirements.txt
 
 build:
-	git clone https://github.com/ONSdigital/sdx-common.git
-	pip3 install ./sdx-common
 	pip3 install -r requirements.txt
 	rm -rf sdx-common
 
