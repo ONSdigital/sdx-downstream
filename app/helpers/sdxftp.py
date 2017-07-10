@@ -42,6 +42,7 @@ class SDXFTP(object):
     def deliver_binary(self, folder, filename, data):
         """Delivery binary delivers a single binary file to the given folder
         """
+        self.logger.info("Delivering binary file to FTP", host=self.host, folder=folder, filename=filename)
         stream = io.BytesIO(data)
         conn = self.get_connection()
         conn.cwd(folder)

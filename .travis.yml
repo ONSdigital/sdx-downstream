@@ -1,8 +1,13 @@
 language: python
 python:
+  - "3.6"
   - "3.5"
   - "3.4"
 install:
-  - make
+  - make build
+  - pip install codecov
 script:
   - make test
+  - coverage run -m unittest tests/*.py
+after_success:
+  - codecov
