@@ -18,8 +18,3 @@ test:
 	pip3 install -r test_requirements.txt
 	flake8 --exclude ./lib/*
 	python3 -m unittest tests/*.py
-
-check-env:
-	ifeq ($(SDX_HOME),)
-		$(error SDX_HOME is not set)
-	endif
