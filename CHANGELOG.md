@@ -1,4 +1,5 @@
 ### Unreleased
+  - Remove SDX_HOME env variable from makefile and add tag to sdx-common clone in travis
 
 ### 2.1.0 2017-07-10
   - Log tx_id for FTP successes and failures
@@ -9,7 +10,7 @@
   - Addings sdx-common functionality
   - updating timezoning
   - Update and pin version of sdx-common to 0.7.0
-  - Remove SDX_HOME env variable from makefile and add tag to sdx-common clone in travis
+
 
 ### 2.0.1 2017-03-15
   - Log version number on startup
