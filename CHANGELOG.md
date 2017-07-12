@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 2.1.0 2017-07-10
   - Log tx_id for FTP successes and failures
   - Add environment variables to README
   - Add codacy badge
