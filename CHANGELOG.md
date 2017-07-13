@@ -10,6 +10,7 @@
   - Addings sdx-common functionality
   - updating timezoning
   - Update and pin version of sdx-common to 0.7.0
+  - Add additional logging
 
 
 ### 2.0.1 2017-03-15
