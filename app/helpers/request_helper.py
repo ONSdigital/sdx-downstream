@@ -63,10 +63,18 @@ def get_sequence_no():
 
 
 def get_doc_from_store(tx_id):
+    logger.info(
+        "About to get document from store",
+        tx_id=tx_id,
+    )
     store_url = "{0}/responses/{1}".format(SDX_STORE_URL, tx_id)
     response = remote_call(store_url)
 
     if not response_ok(response, store_url):
         return None
 
+    logger.info(
+        "Successfully got document from store",
+        tx_id=tx_id,
+    )
     return response.json()
