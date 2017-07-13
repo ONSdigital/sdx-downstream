@@ -30,9 +30,11 @@ class Consumer(AsyncConsumer):
         try:
             tx_id = body.decode("utf-8")
 
-            logger.info("Decoded message body",
-                        delivery_tag=basic_deliver.delivery_tag,
-                        tx_id=tx_id)
+            logger.info(
+                "Decoded message body",
+                delivery_tag=basic_deliver.delivery_tag,
+                tx_id=tx_id,
+            )
         except UnicodeDecodeError as e:
             logger.error("Cannot decode message body",
                          queue=self.QUEUE,
@@ -50,7 +52,8 @@ class Consumer(AsyncConsumer):
             queue=self.QUEUE,
             delivery_tag=basic_deliver.delivery_tag,
             delivery_count=delivery_count,
-            app_id=properties.app_id
+            app_id=properties.app_id,
+            tx_id=tx_id,
         )
 
         document = get_doc_from_store(tx_id)
