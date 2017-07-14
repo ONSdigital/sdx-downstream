@@ -1,5 +1,5 @@
 ### Unreleased
-  - Remove SDX_HOME env variable from makefile and add tag to sdx-common clone in travis
+  - Remove SDX_HOME env variable from makefile and add tag to sdx-common clone
 
 ### 2.1.0 2017-07-10
   - Log tx_id for FTP successes and failures
