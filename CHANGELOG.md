@@ -1,5 +1,9 @@
 ### Unreleased
+<<<<<<< HEAD
+  - Remove SDX_HOME env variable from makefile and add tag to sdx-common clone
+=======
   - Change all instances of ADD to COPY in Dockerfile
+>>>>>>> master
 
 ### 2.1.0 2017-07-10
   - Log tx_id for FTP successes and failures
@@ -11,6 +15,7 @@
   - updating timezoning
   - Update and pin version of sdx-common to 0.7.0
   - Add additional logging
+
 
 ### 2.0.1 2017-03-15
   - Log version number on startup
