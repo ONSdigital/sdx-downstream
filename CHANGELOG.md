@@ -1,5 +1,9 @@
 ### Unreleased
+<<<<<<< HEAD
   - Remove SDX_HOME env variable from makefile and add tag to sdx-common clone
+=======
+  - Change all instances of ADD to COPY in Dockerfile
+>>>>>>> master
 
 ### 2.1.0 2017-07-10
   - Log tx_id for FTP successes and failures
