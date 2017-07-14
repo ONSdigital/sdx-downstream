@@ -1,4 +1,5 @@
 ### Unreleased
+  - Change all instances of ADD to COPY in Dockerfile
 
 ### 2.1.0 2017-07-10
   - Log tx_id for FTP successes and failures
