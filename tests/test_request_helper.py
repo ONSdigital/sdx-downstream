@@ -1,6 +1,7 @@
 import unittest
 from requests import Response
 from app.helpers import request_helper
+from app.helpers.exceptions import DocumentNotFoundError, RetryableError
 
 
 class TestSurveyProcessor(unittest.TestCase):
@@ -19,14 +20,20 @@ class TestSurveyProcessor(unittest.TestCase):
     def test_response_ok_400_return_false(self):
         response = Response()
         response.status_code = 400
-        result = request_helper.response_ok(response)
-        self.assertEqual(result, False)
+        with self.assertRaises(RetryableError):
+            request_helper.response_ok(response)
 
     def test_response_ok_500_return_false(self):
         response = Response()
         response.status_code = 500
-        result = request_helper.response_ok(response)
-        self.assertEqual(result, False)
+        with self.assertRaises(RetryableError):
+            request_helper.response_ok(response)
+
+    def test_response_ok_404_raises_error(self):
+        response = Response()
+        response.status_code = 404
+        with self.assertRaises(DocumentNotFoundError):
+            request_helper.response_ok(response)
 
     def test_service_name_return_responses(self):
         url = "www.testing.test/responses/12345"

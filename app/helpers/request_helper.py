@@ -1,7 +1,7 @@
 from app.settings import logger, session, SDX_SEQUENCE_URL, SDX_STORE_URL
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-from app.helpers.exceptions import RetryableError
+from app.helpers.exceptions import RetryableError, DocumentNotFoundError
 
 
 def service_name(url=None):
@@ -43,12 +43,20 @@ def response_ok(response, service_url=None):
     if response is None:
         logger.error("No response from service")
         return False
+
     elif response.status_code == 200:
         logger.info("Returned from service", request_url=response.url, status=response.status_code, service=service)
         return True
+
+    elif response.status_code == 404:
+        logger.info("NotFound returned from service", request_url=response.url, status=response.status_code,
+                    service=service)
+        raise DocumentNotFoundError("NotFound returned from {}".format(service))
+
     else:
-        logger.error("Returned from service", request_url=response.url, status=response.status_code, service=service)
-        return False
+        logger.info("Bad response from service", request_url=response.url, status=response.status_code,
+                    service=service)
+        raise RetryableError("Bad response from {}".format(service))
 
 
 def get_sequence_no():
