@@ -49,9 +49,9 @@ def response_ok(response, service_url=None):
         return True
 
     elif response.status_code == 404:
-        logger.info("NotFound returned from service", request_url=response.url, status=response.status_code,
+        logger.info("404 Not Found response returned from service", request_url=response.url, status=response.status_code,
                     service=service)
-        raise DocumentNotFoundError("NotFound returned from {}".format(service))
+        raise DocumentNotFoundError("404 Not Found response returned from {}".format(service))
 
     else:
         logger.info("Bad response from service", request_url=response.url, status=response.status_code,
