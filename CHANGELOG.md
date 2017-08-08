@@ -1,5 +1,6 @@
 ### Unreleased
   - Correctly handle error responses from dependent services
+  - Integrate with sdc-rabbit library
 
 ### 2.2.0 2017-07-25
   - Change all instances of ADD to COPY in Dockerfile

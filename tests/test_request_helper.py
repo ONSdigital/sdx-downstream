@@ -1,15 +1,10 @@
 import unittest
 from requests import Response
 from app.helpers import request_helper
-from app.helpers.exceptions import NotFoundError, RetryableError, BadRequestError
+from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 
 class TestSurveyProcessor(unittest.TestCase):
-
-    # def test_response_None(self):
-    #     response = None
-    #     result = request_helper.response_ok(response)
-    #     self.assertEqual(result, False)
 
     def test_response_ok_200_return_true(self):
         response = Response()
@@ -20,7 +15,7 @@ class TestSurveyProcessor(unittest.TestCase):
     def test_response_ok_400_raise_bad_request_error(self):
         response = Response()
         response.status_code = 400
-        with self.assertRaises(BadRequestError):
+        with self.assertRaises(QuarantinableError):
             request_helper.response_ok(response)
 
     def test_response_ok_500_raise_retryable_error(self):
@@ -32,7 +27,7 @@ class TestSurveyProcessor(unittest.TestCase):
     def test_response_ok_404_raises_not_found_error(self):
         response = Response()
         response.status_code = 404
-        with self.assertRaises(NotFoundError):
+        with self.assertRaises(QuarantinableError):
             request_helper.response_ok(response)
 
     def test_service_name_return_responses(self):

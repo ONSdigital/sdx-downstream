@@ -1,7 +1,12 @@
-from app.settings import logger, session, SDX_SEQUENCE_URL, SDX_STORE_URL
+import logging
+from structlog import wrap_logger
+
+from app.settings import session, SDX_SEQUENCE_URL, SDX_STORE_URL
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-from app.helpers.exceptions import RetryableError, NotFoundError, BadRequestError
+from sdc.rabbit.exceptions import RetryableError, QuarantinableError
+
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 def service_name(url=None):
@@ -13,6 +18,8 @@ def service_name(url=None):
             return 'SDX_SEQUENCE'
         elif 'common-software' in parts:
             return 'SDX_TRANSFORM_CS'
+        else:
+            return None
     except AttributeError as e:
         logger.error(e)
 
@@ -51,14 +58,14 @@ def response_ok(response, service_url=None):
                     status=response.status_code,
                     service=service,
                     )
-        raise NotFoundError("Not Found response returned from {}".format(service))
+        raise QuarantinableError("Not Found response returned from {}".format(service))
     elif 400 <= response.status_code < 500:
         logger.info("Bad Request response from service",
                     request_url=response.url,
                     status=response.status_code,
                     service=service,
                     )
-        raise BadRequestError("Bad Request response from {}".format(service))
+        raise QuarantinableError("Bad Request response from {}".format(service))
     else:
         logger.info("Bad response from service",
                     request_url=response.url,

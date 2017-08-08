@@ -1,6 +1,6 @@
 from app import settings
 from app.helpers.request_helper import remote_call, get_sequence_no, response_ok
-from app.helpers.exceptions import RetryableError, BadRequestError
+from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 
 class CommonSoftwareProcessor(object):
@@ -51,7 +51,7 @@ class CommonSoftwareProcessor(object):
             self.logger.info("Successfully transformed")
             return response.content
         else:
-            raise BadRequestError("Response missing content")
+            raise QuarantinableError("Response missing content")
 
     def _get_ftp_folder(self, survey):
         if 'heartbeat' in survey and survey['heartbeat'] is True:
