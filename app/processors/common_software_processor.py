@@ -1,6 +1,6 @@
 from app import settings
-from app.helpers.request_helper import remote_call, get_sequence_no
-from app.helpers.exceptions import BadMessageError, RetryableError
+from app.helpers.request_helper import remote_call, get_sequence_no, response_ok
+from app.helpers.exceptions import RetryableError, BadRequestError
 
 
 class CommonSoftwareProcessor(object):
@@ -47,19 +47,11 @@ class CommonSoftwareProcessor(object):
 
         response = remote_call(endpoint, json=self.survey)
 
-        if response.status_code == 400 or response.content is None:
-            # There was an issue with the data. This would imply the data was
-            # corrupt or wrong in some way that means it cannot be transformed
-            self.logger.error("Failed to transform", request_url=endpoint, status=response.status_code)
-            raise BadMessageError("Failure to transform")
-
-        elif response.status_code != 200:
-            # General internal error received from transformer so worth retrying.
-            self.logger.error("Bad response from transformer", request_url=endpoint, status=response.status_code)
-            raise RetryableError("Failure to transform")
-
-        self.logger.info("Successfully transformed")
-        return response.content
+        if response_ok(response, endpoint) and response.content is not None:
+            self.logger.info("Successfully transformed")
+            return response.content
+        else:
+            raise BadRequestError("Response missing content")
 
     def _get_ftp_folder(self, survey):
         if 'heartbeat' in survey and survey['heartbeat'] is True:

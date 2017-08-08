@@ -5,7 +5,7 @@ from app.helpers.request_helper import get_doc_from_store
 from app.processors.common_software_processor import CommonSoftwareProcessor
 from app import settings
 from app.helpers.sdxftp import SDXFTP
-from app.helpers.exceptions import BadMessageError, RetryableError, DocumentNotFoundError
+from app.helpers.exceptions import BadRequestError, RetryableError, NotFoundError
 
 
 def get_delivery_count_from_properties(properties):
@@ -60,8 +60,16 @@ class Consumer(AsyncConsumer):
             document = get_doc_from_store(tx_id)
             self.process(basic_deliver, delivery_count, document)
 
-        except DocumentNotFoundError as e:
+        except NotFoundError as e:
             logger.error("Document not found",
+                         exception=e,
+                         delivery_count=delivery_count,
+                         tx_id=tx_id,
+                         )
+
+        except BadRequestError as e:
+            self.reject_message(basic_deliver.delivery_tag, tx_id=tx_id)
+            logger.error("Bad Request",
                          exception=e,
                          delivery_count=delivery_count,
                          tx_id=tx_id,
@@ -86,7 +94,7 @@ class Consumer(AsyncConsumer):
                                   tx_id=processor.tx_id,
                                   )
 
-        except BadMessageError as e:
+        except BadRequestError as e:
             # If it's a bad message then we have to reject it
             self.reject_message(basic_deliver.delivery_tag, tx_id=processor.tx_id)
             processor.logger.error("Bad message",

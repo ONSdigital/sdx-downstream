@@ -1,6 +1,6 @@
-class BadMessageError(Exception):
-    """A bad message is broken in some way that will never be accepted by
-    the endpoing and as such should be rejected (it will still be logged
+class BadRequestError(Exception):
+    """A bad request raised by service, request will never be accepted by
+    the endpoint and as such should be rejected (it will still be logged
     and stored so no data is lost)
 
     """
@@ -23,8 +23,8 @@ class DecryptError(Exception):
     pass
 
 
-class DocumentNotFoundError(Exception):
-    """Document not found in store.
+class NotFoundError(Exception):
+    """Resource not found in service.
 
     """
     pass
