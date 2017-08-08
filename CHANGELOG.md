@@ -1,5 +1,5 @@
 ### Unreleased
-  - Correctly handle 404 responses from sdx-store service
+  - Correctly handle error responses from dependent services
 
 ### 2.2.0 2017-07-25
   - Change all instances of ADD to COPY in Dockerfile
