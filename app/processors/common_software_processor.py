@@ -1,7 +1,6 @@
-from app import settings
-
 from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
+from app import settings
 from app.helpers.request_helper import remote_call, get_sequence_no, response_ok
 
 
