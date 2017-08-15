@@ -1,15 +1,12 @@
 import logging
-from structlog import wrap_logger
 import os
 import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-from sdx.common.logger_config import logger_initial_config
 
-
-logger_initial_config(service_name='sdx-downstream')
-logger = wrap_logger(logging.getLogger(__name__))
+LOGGING_LEVEL = logging.getLevelName(os.getenv("LOGGING_LEVEL", "DEBUG"))
+LOGGING_FORMAT = "%(asctime)s.%(msecs)06dZ|%(levelname)s: sdx-downstream: %(message)s"
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
@@ -28,6 +25,7 @@ FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
 
 RABBIT_QUEUE = os.getenv('CS_NOTIFICATIONS_QUEUE', 'sdx-cs-survey-notifications')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-cs-survey-quarantine')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),

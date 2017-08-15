@@ -10,3 +10,4 @@ include/
 pip-selfcheck.json
 coverage.xml
 .coverage
+.idea

@@ -1,7 +1,13 @@
-from app.settings import logger, session, SDX_SEQUENCE_URL, SDX_STORE_URL
+import logging
+from structlog import wrap_logger
+
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-from app.helpers.exceptions import RetryableError
+from sdc.rabbit.exceptions import RetryableError, QuarantinableError
+
+from app.settings import session, SDX_SEQUENCE_URL, SDX_STORE_URL
+
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 def service_name(url=None):
@@ -11,6 +17,10 @@ def service_name(url=None):
             return 'SDX_STORE'
         elif 'sequence' in parts:
             return 'SDX_SEQUENCE'
+        elif 'common-software' in parts:
+            return 'SDX_TRANSFORM_CS'
+        else:
+            return None
     except AttributeError as e:
         logger.error(e)
 
@@ -37,29 +47,41 @@ def remote_call(url, json=None):
         raise RetryableError("Connection error")
 
 
-def response_ok(response, service_url=None):
-    service = service_name(service_url)
+def response_ok(response):
+    service = service_name(response.url)
 
-    if response is None:
-        logger.error("No response from service")
-        return False
-    elif response.status_code == 200:
+    if response.status_code == 200:
         logger.info("Returned from service", request_url=response.url, status=response.status_code, service=service)
         return True
+    elif response.status_code == 404:
+        logger.info("Not Found response returned from service",
+                    request_url=response.url,
+                    status=response.status_code,
+                    service=service,
+                    )
+        raise QuarantinableError("Not Found response returned from {}".format(service))
+    elif 400 <= response.status_code < 500:
+        logger.info("Bad Request response from service",
+                    request_url=response.url,
+                    status=response.status_code,
+                    service=service,
+                    )
+        raise QuarantinableError("Bad Request response from {}".format(service))
     else:
-        logger.error("Returned from service", request_url=response.url, status=response.status_code, service=service)
-        return False
+        logger.info("Bad response from service",
+                    request_url=response.url,
+                    status=response.status_code,
+                    service=service,
+                    )
+        raise RetryableError("Bad response from {}".format(service))
 
 
 def get_sequence_no():
     sequence_url = "{0}/sequence".format(SDX_SEQUENCE_URL)
     response = remote_call(sequence_url)
 
-    if not response_ok(response, sequence_url):
-        logger.error("Failed to get sequence number", request_url=sequence_url)
-        return None
-
-    return response.json()['sequence_no']
+    if response_ok(response):
+        return response.json().get('sequence_no')
 
 
 def get_doc_from_store(tx_id):
@@ -70,11 +92,9 @@ def get_doc_from_store(tx_id):
     store_url = "{0}/responses/{1}".format(SDX_STORE_URL, tx_id)
     response = remote_call(store_url)
 
-    if not response_ok(response, store_url):
-        return None
-
-    logger.info(
-        "Successfully got document from store",
-        tx_id=tx_id,
-    )
-    return response.json()
+    if response_ok(response):
+        logger.info(
+            "Successfully got document from store",
+            tx_id=tx_id,
+        )
+        return response.json()
