@@ -1,4 +1,5 @@
 ### Unreleased
+  - Update requirements to include hashes
   - Correctly handle error responses from dependent services
   - Integrate with sdc-rabbit library
 
