@@ -8,7 +8,7 @@ from app.processors.common_software_processor import CommonSoftwareProcessor
 from tests.test_data import common_software_survey
 from requests import Response
 from app.helpers.sdxftp import SDXFTP
-from app.helpers.exceptions import BadMessageError, RetryableError
+from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 logger = wrap_logger(logging.getLogger(__name__))
 ftpconn = SDXFTP(logger, "", "", "")
@@ -40,16 +40,10 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
                 with self.assertRaises(RetryableError):
                     self.processor.process()
 
-                # 418 Unexpected teapot - catch any unexpected response
-                response.status_code = 418
-                call_mock.return_value = response
-                with self.assertRaises(RetryableError):
-                    self.processor.process()
-
                 # 400 bad data sent
                 response.status_code = 400
                 call_mock.return_value = response
-                with self.assertRaises(BadMessageError):
+                with self.assertRaises(QuarantinableError):
                     self.processor.process()
 
                 # 200 and content
@@ -60,7 +54,7 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
                 # 200 and missing content
                 response._content = None
                 call_mock.return_value = response
-                with self.assertRaises(BadMessageError):
+                with self.assertRaises(QuarantinableError):
                     self.processor.process()
 
     def test_sequence(self):
