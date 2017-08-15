@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 pika==0.10.0 \
     --hash=sha256:63131aaeec48a6c8f1db1fe657e1e74cf384c3927eb7d1725e31edae4220dea4 \
     --hash=sha256:7277b4d12a99efa4058782614d84138983f9f89d690bdfcea66290d810806459
