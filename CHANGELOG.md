@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 2.3.0 2017-09-11
   - Ensure integrity and version of library dependencies
   - Correctly handle error responses from dependent services
   - Integrate with sdc-rabbit library
