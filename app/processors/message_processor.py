@@ -13,6 +13,7 @@ class MessageProcessor:
     def __init__(self, logger=None):
         self.logger = logger or wrap_logger(logging.getLogger(__name__))
         self._ftp = SDXFTP(self.logger, settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
+        self.cora_surveys = settings.CORA_SURVEYS
 
     def process(self, msg, tx_id):
 
@@ -25,7 +26,7 @@ class MessageProcessor:
         )
 
         document = get_doc_from_store(tx_id)
-        if document['survey_id'] == '144':
+        if document['survey_id'] in self.cora_surveys:
             cora_processor = CoraProcessor(self.logger, document, self._ftp)
 
             cora_processor.process()
