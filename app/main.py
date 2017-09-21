@@ -21,6 +21,7 @@ def run():
     )
 
     message_consumer = MessageConsumer(
+        durable_queue=True,
         exchange=app.settings.RABBIT_EXCHANGE,
         exchange_type='topic',
         rabbit_queue=app.settings.RABBIT_QUEUE,
