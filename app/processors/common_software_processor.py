@@ -35,7 +35,8 @@ class CommonSoftwareProcessor(object):
                 self.tx_id = self.survey['tx_id']
                 self.logger = self.logger.bind(tx_id=self.tx_id)
 
-    def _get_url(self):
+    @staticmethod
+    def _get_url():
         sequence_no = get_sequence_no()
         if sequence_no is None:
             raise RetryableError("Failed to get sequence number")
@@ -54,7 +55,8 @@ class CommonSoftwareProcessor(object):
         else:
             raise QuarantinableError("Response missing content")
 
-    def _get_ftp_folder(self, survey):
+    @staticmethod
+    def _get_ftp_folder(survey):
         if 'heartbeat' in survey and survey['heartbeat'] is True:
             return settings.FTP_HEARTBEAT_FOLDER
         else:
