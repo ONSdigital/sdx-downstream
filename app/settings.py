@@ -26,7 +26,7 @@ FTP_PASS = os.getenv('FTP_PASS')
 FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
 FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
 
-RABBIT_QUEUE = os.getenv('SDX_DOWNSTREAM_NOTIFICATION_QUEUE', 'sdx-downstream-notification-queue')
+RABBIT_QUEUE = os.getenv('SDX_DOWNSTREAM_NOTIFICATION_QUEUE', 'sdx-survey-notifications')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-downstream-quarantine')
 
