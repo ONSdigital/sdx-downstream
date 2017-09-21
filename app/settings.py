@@ -14,7 +14,10 @@ APP_TMP = os.path.join(APP_ROOT, 'tmp')
 # Default to true, cast to boolean
 SDX_STORE_URL = os.getenv("SDX_STORE_URL", "http://sdx-store:5000")
 SDX_TRANSFORM_CS_URL = os.getenv("SDX_TRANSFORM_CS_URL", "http://sdx-transform-cs:5000")
+SDX_TRANSFORM_CORA_URL = os.getenv("SDX_TRANSFORM_CORA_URL", "http://sdx-transform-cora:5000")
 SDX_SEQUENCE_URL = os.getenv("SDX_SEQUENCE_URL", "http://sdx-sequence:5000")
+
+CORA_SURVEYS = ['144']
 
 FTP_HOST = os.getenv('FTP_HOST', 'pure-ftpd')
 FTP_USER = os.getenv('FTP_USER')
@@ -23,9 +26,9 @@ FTP_PASS = os.getenv('FTP_PASS')
 FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
 FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
 
-RABBIT_QUEUE = os.getenv('CS_NOTIFICATIONS_QUEUE', 'sdx-cs-survey-notifications')
+RABBIT_QUEUE = os.getenv('SDX_DOWNSTREAM_NOTIFICATION_QUEUE', 'sdx-survey-notifications')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
-RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-cs-survey-quarantine')
+RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-downstream-quarantine')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
