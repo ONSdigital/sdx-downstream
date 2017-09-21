@@ -29,7 +29,7 @@ class CoraProcessor(object):
             try:
                 metadata = self.survey['metadata']
                 self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
-            except KeyError as e:
+            except KeyError:
                 self.logger.error("Failed to get metadata")
 
             if 'tx_id' in self.survey:
