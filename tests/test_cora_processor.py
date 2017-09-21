@@ -21,7 +21,8 @@ class TestCoraProcessor(unittest.TestCase):
         self.processor = CoraProcessor(logger, survey, ftpconn)
         self.processor.ftp.unzip_and_deliver = MagicMock(return_value=True)
 
-    def _get_response(self):
+    @staticmethod
+    def _get_response():
         response = Response()
         response.status_code = 200
         response._content = b'Some content'

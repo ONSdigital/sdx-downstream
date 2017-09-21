@@ -26,17 +26,21 @@ class MessageProcessor:
         )
 
         document = get_doc_from_store(tx_id)
-        if document['survey_id'] in self.cora_surveys:
-            cora_processor = CoraProcessor(self.logger, document, self._ftp)
 
-            cora_processor.process()
-            cora_processor.logger.info("Processed successfully",
-                                       tx_id=cora_processor.tx_id,
-                                       )
-        else:
-            cs_processor = CommonSoftwareProcessor(self.logger, document, self._ftp)
+        try:
+            if document['survey_id'] in self.cora_surveys:
+                cora_processor = CoraProcessor(self.logger, document, self._ftp)
 
-            cs_processor.process()
-            cs_processor.logger.info("Processed successfully",
-                                     tx_id=cs_processor.tx_id,
-                                     )
+                cora_processor.process()
+                cora_processor.logger.info("Processed successfully",
+                                           tx_id=cora_processor.tx_id,
+                                           )
+            else:
+                cs_processor = CommonSoftwareProcessor(self.logger, document, self._ftp)
+
+                cs_processor.process()
+                cs_processor.logger.info("Processed successfully",
+                                         tx_id=cs_processor.tx_id,
+                                         )
+        except KeyError:
+            self.logger.error("No survey ID in document")

@@ -1,7 +1,7 @@
 from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 from app import settings
-from app.helpers.request_helper import remote_call, get_sequence_no, response_ok
+from app.helpers.request_helper import get_sequence_no, remote_call, response_ok
 
 
 class CoraProcessor(object):
@@ -26,15 +26,18 @@ class CoraProcessor(object):
 
     def _setup_logger(self):
         if self.survey:
-            if 'metadata' in self.survey:
+            try:
                 metadata = self.survey['metadata']
                 self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
+            except KeyError as e:
+                self.logger.error("Failed to get metadata")
 
             if 'tx_id' in self.survey:
                 self.tx_id = self.survey['tx_id']
                 self.logger = self.logger.bind(tx_id=self.tx_id)
 
-    def _get_url(self):
+    @staticmethod
+    def _get_url():
         sequence_no = get_sequence_no()
         if sequence_no is None:
             raise RetryableError("Failed to get sequence number")
@@ -53,7 +56,8 @@ class CoraProcessor(object):
         else:
             raise QuarantinableError("Response missing content")
 
-    def _get_ftp_folder(self, survey):
+    @staticmethod
+    def _get_ftp_folder(survey):
         if 'heartbeat' in survey and survey['heartbeat'] is True:
             return settings.FTP_HEARTBEAT_FOLDER
         else:
