@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.0.0 2017-09-25
   - Add ability to handle cora submissions
   - Remove clone of sdx-common in docker
 
