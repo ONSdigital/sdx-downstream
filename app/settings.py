@@ -23,11 +23,11 @@ FTP_HOST = os.getenv('FTP_HOST', 'pure-ftpd')
 FTP_USER = os.getenv('FTP_USER')
 FTP_PASS = os.getenv('FTP_PASS')
 
-FTP_FOLDER = os.getenv('FTP_FOLDER', '/')
-FTP_HEARTBEAT_FOLDER = os.getenv('FTP_HEARTBEAT_FOLDER', '/heartbeat')
+FTP_FOLDER = '/'
+FTP_HEARTBEAT_FOLDER = '/heartbeat'
 
-RABBIT_QUEUE = os.getenv('SDX_DOWNSTREAM_NOTIFICATION_QUEUE', 'sdx-survey-notifications')
-RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+RABBIT_QUEUE = 'sdx-survey-notification-durable'
+RABBIT_EXCHANGE = 'message'
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-downstream-quarantine')
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
