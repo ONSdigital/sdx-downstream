@@ -1,13 +1,24 @@
 import logging
 from structlog import wrap_logger
 
+import requests
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
 from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 
-from app.settings import session, SDX_SEQUENCE_URL, SDX_STORE_URL
+from app.settings import SDX_SEQUENCE_URL, SDX_STORE_URL
 
 logger = wrap_logger(logging.getLogger(__name__))
+
+# Configure the number of retries attempted before failing call
+session = requests.Session()
+
+retries = Retry(total=5, backoff_factor=0.1)
+
+session.mount('http://', HTTPAdapter(max_retries=retries))
+session.mount('https://', HTTPAdapter(max_retries=retries))
 
 
 def service_name(url=None):
