@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.2.0 2017-11-01
   - Add service config to application config file
   - Begin using PyTest as default test runner
   - Remove sdx-common from requirements
