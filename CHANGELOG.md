@@ -1,6 +1,7 @@
 ### Unreleased
   - Add service config to application config file
   - Begin using PyTest as default test runner
+  - Remove sdx-common from requirements
 
 ### 3.1.0 2017-10-16
   - Hardcode unchanging variables in settings.py to make configuration management simpler
