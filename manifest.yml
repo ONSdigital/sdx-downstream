@@ -1,0 +1,18 @@
+applications:
+- name: sdx-downstream
+  buildpack: python_buildpack
+  health-check-type: process
+
+  env:
+    CF_DEPLOYMENT: True
+    SDX_STORE_URL: http://sdx-store:5000"
+    SDX_TRANSFORM_CS_URL: http://sdx-transform-cs:5000
+    SDX_TRANSFORM_CORA_URL: http://sdx-transform-cora:5000
+    SDX_SEQUENCE_URL:  http://sdx-sequence:5000
+    FTP_HOST: pure-ftpd
+    RABBIT_QUEUE: sdx-survey-notification-durable
+    RABBIT_EXCHANGE: message
+    RABBIT_QUARANTINE_QUEUE: sdx-downstream-quarantine
+
+  services:
+   - sdx-rabbit-dev
