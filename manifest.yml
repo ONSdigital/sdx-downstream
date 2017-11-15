@@ -5,10 +5,10 @@ applications:
 
   env:
     CF_DEPLOYMENT: True
-    SDX_STORE_URL: http://sdx-store:5000"
-    SDX_TRANSFORM_CS_URL: http://sdx-transform-cs:5000
-    SDX_TRANSFORM_CORA_URL: http://sdx-transform-cora:5000
-    SDX_SEQUENCE_URL:  http://sdx-sequence:5000
+    SDX_STORE_URL: http://sdx-store.apps.devtest.onsclofo.uk/store
+    SDX_TRANSFORM_CS_URL: http://sdx-transform-cs.apps.devtest.onsclofo.uk/transform_cs
+    SDX_TRANSFORM_CORA_URL: http://sdx-transform-cora.apps.devtest.onsclofo.uk/transform_cora
+    SDX_SEQUENCE_URL:  http://sdx-sequence.apps.devtest.onsclofo.uk/sequence
     FTP_HOST: pure-ftpd
     RABBIT_QUEUE: sdx-survey-notification-durable
     RABBIT_EXCHANGE: message
