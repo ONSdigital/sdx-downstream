@@ -9,9 +9,9 @@ applications:
     SDX_TRANSFORM_CS_URL: http://sdx-transform-cs.apps.devtest.onsclofo.uk
     SDX_TRANSFORM_CORA_URL: http://sdx-transform-cora.apps.devtest.onsclofo.uk
     SDX_SEQUENCE_URL:  http://sdx-sequence.apps.devtest.onsclofo.uk
-    FTP_HOST: pure-ftpd
-    FTP_USER:
-    FTP_PASS:
+    FTP_HOST: sdx-ftp.apps.devtest.onsclofo.uk
+    FTP_USER: ons
+    FTP_PASS: ons
     RABBIT_QUEUE: sdx-survey-notification-durable
     RABBIT_EXCHANGE: message
     RABBIT_QUARANTINE_QUEUE: sdx-downstream-quarantine
