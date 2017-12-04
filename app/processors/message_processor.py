@@ -28,19 +28,17 @@ class MessageProcessor:
         document = get_doc_from_store(tx_id)
 
         try:
-            if document['survey_id'] in self.cora_surveys:
-                cora_processor = CoraProcessor(self.logger, document, self._ftp)
+            processor = self._get_processor(document)
+            processor.process()
+            processor.logger.info("Processed successfully", tx_id=processor.tx_id)
 
-                cora_processor.process()
-                cora_processor.logger.info("Processed successfully",
-                                           tx_id=cora_processor.tx_id,
-                                           )
-            else:
-                cs_processor = CommonSoftwareProcessor(self.logger, document, self._ftp)
-
-                cs_processor.process()
-                cs_processor.logger.info("Processed successfully",
-                                         tx_id=cs_processor.tx_id,
-                                         )
         except KeyError:
             self.logger.error("No survey ID in document")
+
+    def _get_processor(self, document):
+        """Processor factory that returns the correct processor based on the survey_id in the document"""
+        processor = CoraProcessor(self.logger, document, self._ftp) \
+            if document['survey_id'] in self.cora_surveys else \
+            CommonSoftwareProcessor(self.logger, document, self._ftp)
+
+        return processor
