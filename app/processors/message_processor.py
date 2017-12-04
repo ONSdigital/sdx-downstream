@@ -20,10 +20,7 @@ class MessageProcessor:
         if tx_id is None:
             tx_id = msg
 
-        self.logger.info(
-            'Received message',
-            tx_id=tx_id,
-        )
+        self.logger.info('Received message', tx_id=tx_id)
 
         document = get_doc_from_store(tx_id)
 

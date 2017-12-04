@@ -4,16 +4,16 @@ from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 
 class Processor:
-    """Abstract base class with common functionality between Cora and common software classes
-        Child classes should implement _setup_logger() and _get_url(), this class does NOT verify that they do
-    """
-    def __init__(self, logger, survey, ftpconn):
+    """Abstract base class with common functionality between Cora and common software classes"""
+
+    def __init__(self, logger, survey, ftpconn, base_url, endpoint_name):
         self.logger = logger
         self.survey = survey
         self.tx_id = ""
         self._setup_logger()
         self.ftp = ftpconn
-        return
+        self._base_url = base_url
+        self._endpoint_name = endpoint_name
 
     def process(self):
         """call transform and error if needed"""
@@ -24,7 +24,6 @@ class Processor:
         if not delivered:
             self.logger.error("Failed to deliver zip to ftp")
             raise RetryableError("Failed to deliver zip to ftp")
-
         return
 
     def _transform(self):
@@ -39,6 +38,24 @@ class Processor:
             return response.content
         else:
             raise QuarantinableError("Response missing content")
+
+    def _get_url(self):
+        """Gets the transformer url"""
+        sequence_no = Processor._get_sequence_number()
+        return "{0}/{1}/{2}".format(self._base_url, self._endpoint_name, sequence_no)
+
+    def _setup_logger(self):
+        """Sets up the logger"""
+        if self.survey:
+            try:
+                metadata = self.survey['metadata']
+                self.logger = self.logger.bind(user_id=metadata['user_id'], ru_ref=metadata['ru_ref'])
+            except KeyError:
+                self.logger.error("Failed to get metadata")
+
+            if 'tx_id' in self.survey:
+                self.tx_id = self.survey['tx_id']
+                self.logger = self.logger.bind(tx_id=self.tx_id)
 
     @staticmethod
     def _get_sequence_number():
