@@ -5,6 +5,7 @@ import json
 import logging
 from structlog import wrap_logger
 from app.processors.cora_processor import CoraProcessor
+from app.settings import FTP_HEARTBEAT_FOLDER
 from tests.test_data import cora_survey
 from requests import Response
 from app.helpers.sdxftp import SDXFTP
@@ -90,3 +91,13 @@ class TestCoraProcessor(unittest.TestCase):
                 self.processor.ftp.unzip_and_deliver = MagicMock(return_value=False)
                 with self.assertRaises(RetryableError):
                     self.processor.process()
+
+    def test_if_no_metadata_error_is_logged(self):
+        survey = {"a key": "a value"}
+        with self.assertLogs(level='ERROR') as cm:
+            self.processor = CoraProcessor(logger, survey, ftpconn)
+        self.assertIn("Failed to get metadata", cm[0][0].message)
+
+    def test_get_ftp_folder_returns_heartbeat_folder_for_heartbeat_survey(self):
+        folder = self.processor._get_ftp_folder({"heartbeat": True})
+        self.assertEquals(folder, FTP_HEARTBEAT_FOLDER)
