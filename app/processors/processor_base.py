@@ -4,7 +4,7 @@ from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 
 class Processor:
-    """Abstract base class with common functionality between Cora and common software classes"""
+    """Base class calls transformer and passes results to ftp"""
 
     def __init__(self, logger, survey, ftpconn, base_url, endpoint_name):
         self.logger = logger
@@ -70,5 +70,5 @@ class Processor:
         """return the destination folder as a string """
         if 'heartbeat' in survey and survey['heartbeat'] is True:
             return settings.FTP_HEARTBEAT_FOLDER
-        else:
-            return settings.FTP_FOLDER
+
+        return settings.FTP_FOLDER

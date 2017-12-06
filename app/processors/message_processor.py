@@ -34,8 +34,8 @@ class MessageProcessor:
 
     def _get_processor(self, document):
         """Processor factory that returns the correct processor based on the survey_id in the document"""
-        processor = CoraProcessor(self.logger, document, self._ftp) \
-            if document['survey_id'] in self.cora_surveys else \
-            CommonSoftwareProcessor(self.logger, document, self._ftp)
 
-        return processor
+        if document['survey_id'] in self.cora_surveys:
+            return CoraProcessor(self.logger, document, self._ftp)
+
+        return CommonSoftwareProcessor(self.logger, document, self._ftp)
