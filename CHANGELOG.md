@@ -1,4 +1,5 @@
 ### Unreleased
+  - Refactored cora_processor , common_software_processor and message_processor to make them dryer
 
 ### 3.3.0 2017-11-21
   - Add changes for moving to cloud foundry
