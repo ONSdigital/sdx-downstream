@@ -21,18 +21,19 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
         self.processor = CommonSoftwareProcessor(logger, survey, ftpconn)
         self.processor.ftp.unzip_and_deliver = MagicMock(return_value=True)
 
-    def _get_response(self):
+    @staticmethod
+    def _get_response():
         response = Response()
         response.status_code = 200
         response._content = b'Some content'
         return response
 
     def test_transform(self):
-        with mock.patch('app.processors.common_software_processor.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
             response = self._get_response()
 
-            with mock.patch('app.processors.common_software_processor.remote_call') as call_mock:
+            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
 
                 # 500 something ary
                 response.status_code = 500
@@ -58,10 +59,10 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
                     self.processor.process()
 
     def test_sequence(self):
-        with mock.patch('app.processors.common_software_processor.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
 
             response = self._get_response()
-            with mock.patch('app.processors.common_software_processor.remote_call') as call_mock:
+            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
                 call_mock.return_value = response
 
                 # Good return
@@ -74,11 +75,11 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
                     self.processor.process()
 
     def test_ftp(self):
-        with mock.patch('app.processors.common_software_processor.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
 
             response = self._get_response()
-            with mock.patch('app.processors.common_software_processor.remote_call') as call_mock:
+            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
                 call_mock.return_value = response
 
                 # Good deliver
