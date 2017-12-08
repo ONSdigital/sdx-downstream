@@ -1,0 +1,25 @@
+applications:
+- name: sdx-downstream-SPACE
+  buildpack: python_buildpack
+  health-check-type: process
+  instances: INSTANCES
+  host: sdx-downstream-SPACE
+  timeout: 180
+  memory: 512M
+
+  env:
+    CF_DEPLOYMENT: True
+    SDX_STORE_URL: http://sdx-store-SPACE.apps.devtest.onsclofo.uk
+    SDX_TRANSFORM_CS_URL: http://sdx-transform-cs-SPACE.apps.devtest.onsclofo.uk
+    SDX_TRANSFORM_CORA_URL: http://sdx-transform-cora-SPACE.apps.devtest.onsclofo.uk
+    SDX_SEQUENCE_URL:  http://sdx-sequence-SPACE.apps.devtest.onsclofo.uk
+    FTP_HOST: pure-ftpd
+    FTP_HOST: localhost
+    FTP_USER: 'ons'
+    FTP_PASS: 'ons'
+    RABBIT_QUEUE: sdx-survey-notification-durable
+    RABBIT_EXCHANGE: message
+    RABBIT_QUARANTINE_QUEUE: sdx-downstream-quarantine
+
+  services:
+   - sdx-rabbit-SPACE
