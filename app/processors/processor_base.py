@@ -19,7 +19,7 @@ class Processor:
         """call transform and error if needed"""
         transformed = self._transform()
 
-        delivered = self.ftp.unzip_and_deliver(self._get_ftp_folder(self.survey), transformed)
+        delivered = self.ftp.unzip_and_deliver(settings.FTP_FOLDER, transformed)
 
         if not delivered:
             self.logger.error("Failed to deliver zip to ftp")
@@ -64,11 +64,3 @@ class Processor:
         if sequence_no is None:
             raise RetryableError("Failed to get sequence number")
         return sequence_no
-
-    @staticmethod
-    def _get_ftp_folder(survey):
-        """return the destination folder as a string """
-        if 'heartbeat' in survey and survey['heartbeat'] is True:
-            return settings.FTP_HEARTBEAT_FOLDER
-
-        return settings.FTP_FOLDER

@@ -20,7 +20,7 @@ It's also possible to install within a container using docker. From the sdx-down
 
 ## Configuration
 
-The following envioronment variables can be set:
+The following environment variables can be set:
 
 | Environment Variable    | Default                               | Description
 |-------------------------|---------------------------------------|----------------
@@ -31,7 +31,6 @@ The following envioronment variables can be set:
 | FTP_USER                | _none_                                | User for FTP account if required
 | FTP_PASS                | _none_                                | Password for FTP account if required
 | FTP_FOLDER              | `/`                                   | FTP folder
-| FTP_HEARTBEAT_FOLDER    | `/heartbeat`                          | FTP heartbeat folder
 | RABBIT_QUEUE            | `sdx-cs-survey-notifications`         | Rabbit queue name
 | RABBIT_EXCHANGE         | `message`                             | RabbitMQ exchange to use
 
