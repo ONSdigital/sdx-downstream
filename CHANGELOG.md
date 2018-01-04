@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.4.0 2018-01-04
   - Removed ability to store heartbeat in a different folder
   - Refactored cora_processor , common_software_processor and message_processor to make them dryer
 
