@@ -10,9 +10,9 @@ six==1.10.0 \
 structlog==16.1.0 \
     --hash=sha256:a8cc45c208c6b251031ec223940552eccd97dbdb322474e0c4ec9e50f76a225a \
     --hash=sha256:b44dfaadcbab84e6bb97bd9b263f61534a79611014679757cd93e2359ee7be01
-sdc-rabbit==1.3.0 \
-    --hash=sha256:a50a915ec61be184d76c8912a48d2450a1c398f5166d319bcf299a8cbd6bd200 \
-    --hash=sha256:1e6c62bea3a21b71dce671ac528de7fe9ceaf7914112ca6f46051410fbc10b2e
+sdc-rabbit==1.3.1 \
+    --hash=sha256:4edfa927f8d9d6f78194abaf785c8aeca6e1f1fb61ba81c1ab40b3ecf755e82e \
+    --hash=sha256:2f4b9da30ee95072ee6c4fbabc9596ab0283f46921832af1053cdc9fad2384c0
 idna==2.6 \
     --hash=sha256:8c7309c718f94b3a625cb648ace320157ad16ff131ae0af362c9f21b80ef6ec4 \
     --hash=sha256:2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f
