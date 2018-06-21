@@ -31,10 +31,9 @@ class TestNoBatchTransformService(unittest.TestCase):
             settings._get_value("SOME_UNKNOWN_ENV", "")
 
     def test_parse_vcap_services(self):
-        rabbit_url1, rabbit_url2 = settings.parse_vcap_services()
-        self.assertEqual("amqp://user:password@168.0.0.1:5672/example_vhost?heartbeat_interval=5", rabbit_url1)
-        self.assertEqual("amqp://user:password@168.0.0.1:5672/example_vhost?heartbeat_interval=5", rabbit_url2)
+        rabbit_url = settings.parse_vcap_services()
+        self.assertEqual("amqp://user:password@168.0.0.1:5672/example_vhost?heartbeat_interval=5", rabbit_url)
 
     def test_parse_non_vcap_services(self):
-        rabbit_url1, rabbit_url2 = settings.parse_non_vcap_services()
-        self.assertEqual('amqp://User:Password@Host:Port/VHost?heartbeat_interval=5', rabbit_url1)
+        rabbit_url = settings.parse_non_vcap_services()
+        self.assertEqual('amqp://User:Password@Host:Port/VHost?heartbeat_interval=5', rabbit_url)

@@ -29,8 +29,7 @@ def parse_vcap_services():
     parsed_vcap_services = json.loads(vcap_services)
     rabbit_config = parsed_vcap_services.get('rabbitmq')
     rabbit_url = rabbit_config[0].get('credentials').get('uri') + HEARTBEAT_INTERVAL
-    rabbit_url2 = rabbit_config[1].get('credentials').get('uri') + HEARTBEAT_INTERVAL if len(rabbit_config) > 1 else rabbit_url
-    return rabbit_url, rabbit_url2
+    return rabbit_url
 
 
 def parse_non_vcap_services():
@@ -42,22 +41,15 @@ def parse_non_vcap_services():
         vhost=_get_value('RABBITMQ_DEFAULT_VHOST', '%2f')
     ) + HEARTBEAT_INTERVAL
 
-    rabbit_url2 = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
-        hostname=_get_value('RABBITMQ_HOST2', 'rabbit'),
-        port=_get_value('RABBITMQ_PORT2', 5672),
-        user=_get_value('RABBITMQ_DEFAULT_USER', 'rabbit'),
-        password=_get_value('RABBITMQ_DEFAULT_PASS', 'rabbit'),
-        vhost=_get_value('RABBITMQ_DEFAULT_VHOST', '%2f')
-    ) + HEARTBEAT_INTERVAL
-    return rabbit_url, rabbit_url2
+    return rabbit_url
 
 
 if os.getenv("CF_DEPLOYMENT", False):
-    RABBIT_URL, RABBIT_URL2 = parse_vcap_services()
+    RABBIT_URL = parse_vcap_services()
 else:
-    RABBIT_URL, RABBIT_URL2 = parse_non_vcap_services()
+    RABBIT_URL = parse_non_vcap_services()
 
-RABBIT_URLS = [RABBIT_URL, RABBIT_URL2]
+RABBIT_URLS = [RABBIT_URL]
 RABBIT_QUEUE = 'sdx-survey-notification-durable'
 RABBIT_EXCHANGE = 'message'
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-downstream-quarantine')
