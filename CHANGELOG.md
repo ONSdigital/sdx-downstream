@@ -1,4 +1,5 @@
 ### Unreleased
+  - Remove second rabbit host
 
 ### 3.5.0 2018-01-17
   - Add heartbeat interval to rabbit mq url
