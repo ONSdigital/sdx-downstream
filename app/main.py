@@ -1,5 +1,7 @@
 import logging
-from structlog import wrap_logger
+import structlog
+from structlog.stdlib import LoggerFactory
+from structlog.threadlocal import wrap_dict
 
 from sdc.rabbit import MessageConsumer
 from sdc.rabbit import QueuePublisher
@@ -15,7 +17,9 @@ def run():
 
     logging.getLogger('sdc.rabbit').setLevel(logging.INFO)
 
-    logger = wrap_logger(logging.getLogger(__name__))
+    # These structlog settings allow bound fields to persist between classes
+    structlog.configure(logger_factory=LoggerFactory(), context_class=wrap_dict(dict))
+    logger = structlog.getLogger()
 
     logger.info('Starting SDX Downstream', version=__version__)
 
