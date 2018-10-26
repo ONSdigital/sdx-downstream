@@ -1,5 +1,6 @@
 ### Unreleased
   - Add reprocessing scripts to repo
+  - Add log with version on startup
 
 ### 3.6.0 2018-06-27
   - Remove second rabbit host
