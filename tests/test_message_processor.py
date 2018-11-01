@@ -1,8 +1,13 @@
 import json
-import unittest
-import logging
 import mock
-from structlog import wrap_logger
+import logging
+import unittest
+
+import structlog
+from structlog.stdlib import LoggerFactory
+from structlog.threadlocal import wrap_dict
+
+from app import settings
 from app.processors.message_processor import MessageProcessor
 from app.processors.cora_processor import CoraProcessor
 from app.processors.common_software_processor import CommonSoftwareProcessor
@@ -12,8 +17,14 @@ from tests.test_data import common_software_survey, cora_survey
 class TestMessageProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.logger = wrap_logger(logging.getLogger(__name__))
-        self.message_processor = MessageProcessor(logger=self.logger)
+        logging.basicConfig(format=settings.LOGGING_FORMAT,
+                            datefmt="%Y-%m-%dT%H:%M:%S",
+                            level=settings.LOGGING_LEVEL)
+
+        logging.getLogger('sdc.rabbit').setLevel(logging.INFO)
+
+        structlog.configure(logger_factory=LoggerFactory(), context_class=wrap_dict(dict))
+        self.message_processor = MessageProcessor()
 
     def test_message_processor_logging_common_software(self):
 

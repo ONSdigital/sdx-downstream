@@ -1,4 +1,5 @@
 ### Unreleased
+  - Add tx_id to ftp log lines
   - Add reprocessing scripts to repo
   - Add log with version on startup
 

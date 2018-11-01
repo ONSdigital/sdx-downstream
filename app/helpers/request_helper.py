@@ -1,6 +1,4 @@
-import logging
-from structlog import wrap_logger
-
+from structlog import get_logger
 import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
@@ -10,7 +8,7 @@ from sdc.rabbit.exceptions import RetryableError, QuarantinableError
 
 from app.settings import SDX_SEQUENCE_URL, SDX_STORE_URL
 
-logger = wrap_logger(logging.getLogger(__name__))
+logger = get_logger()
 
 # Configure the number of retries attempted before failing call
 session = requests.Session()
@@ -22,6 +20,10 @@ session.mount('https://', HTTPAdapter(max_retries=retries))
 
 
 def service_name(url=None):
+    """
+    Attempt to get service being accessed by looking for keywords inside the url
+    :returns: Service name, or None if url doesn't contain a recognised keyword
+    """
     try:
         parts = url.split('/')
         if 'responses' in parts:
@@ -34,8 +36,8 @@ def service_name(url=None):
             return 'SDX_TRANSFORM_CORA'
         else:
             return None
-    except AttributeError as e:
-        logger.error(e)
+    except AttributeError:
+        logger.exception("Service name not found")
 
 
 def remote_call(url, json=None):
@@ -80,13 +82,13 @@ def response_ok(response):
                     service=service,
                     )
         raise QuarantinableError("Bad Request response from {}".format(service))
-    else:
-        logger.info("Bad response from service",
-                    request_url=response.url,
-                    status=response.status_code,
-                    service=service,
-                    )
-        raise RetryableError("Bad response from {}".format(service))
+
+    logger.info("Bad response from service",
+                request_url=response.url,
+                status=response.status_code,
+                service=service,
+                )
+    raise RetryableError("Bad response from {}".format(service))
 
 
 def get_sequence_no():
@@ -98,16 +100,10 @@ def get_sequence_no():
 
 
 def get_doc_from_store(tx_id):
-    logger.info(
-        "About to get document from store",
-        tx_id=tx_id,
-    )
+    logger.info("About to get document from store")
     store_url = "{0}/responses/{1}".format(SDX_STORE_URL, tx_id)
     response = remote_call(store_url)
 
     if response_ok(response):
-        logger.info(
-            "Successfully got document from store",
-            tx_id=tx_id,
-        )
+        logger.info("Successfully got document from store")
         return response.json()

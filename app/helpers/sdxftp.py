@@ -1,17 +1,17 @@
 import zipfile
 import io
 from ftplib import FTP
+from structlog import get_logger
 
 
 class SDXFTP(object):
 
-    def __init__(self, logger, host, user, passwd):
+    def __init__(self, host, user, passwd):
         self._conn = None
         self.host = host
         self.user = user
         self.passwd = passwd
-        self.logger = logger
-        return
+        self.logger = get_logger()
 
     def get_connection(self):
         """Connect checks whether an ftp connection is already open and, if
@@ -21,18 +21,18 @@ class SDXFTP(object):
             # No connection at all
             self.logger.info("Establishing new FTP connection", host=self.host)
             return self._connect()
-        else:
-            try:
-                self._conn.voidcmd("NOOP")
-            except IOError:
-                # Bad response so assume connection is dead and attempt
-                # to reopen.
-                self.logger.info("FTP connection no longer alive, re-establishing connection", host=self.host)
-                return self._connect()
 
-            # Connection exists and seems healthy
-            self.logger.info("FTP connection already established", host=self.host)
-            return self._conn
+        try:
+            self._conn.voidcmd("NOOP")
+        except IOError:
+            # Bad response so assume connection is dead and attempt
+            # to reopen.
+            self.logger.info("FTP connection no longer alive, re-establishing connection", host=self.host)
+            return self._connect()
+
+        # Connection exists and seems healthy
+        self.logger.info("FTP connection already established", host=self.host)
+        return self._conn
 
     def _connect(self):
         self._conn = FTP(self.host)
@@ -66,6 +66,6 @@ class SDXFTP(object):
             self.logger.info("Successfully delivered zip to FTP", host=self.host)
             return True
 
-        except (RuntimeError, zipfile.BadZipfile) as e:
-            self.logger.error("Failed to deliver zip to FTP", host=self.host, error=e)
+        except (RuntimeError, zipfile.BadZipfile):
+            self.logger.exception("Failed to deliver zip to FTP", host=self.host)
             return False

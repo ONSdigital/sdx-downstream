@@ -1,24 +1,23 @@
-import unittest
-import mock
-from unittest.mock import MagicMock
 import json
-import logging
-from structlog import wrap_logger
-from app.processors.common_software_processor import CommonSoftwareProcessor
-from tests.test_data import common_software_survey
+import mock
+import unittest
+from unittest.mock import MagicMock
+
 from requests import Response
-from app.helpers.sdxftp import SDXFTP
 from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
-logger = wrap_logger(logging.getLogger(__name__))
-ftpconn = SDXFTP(logger, "", "", "")
+from app.helpers.sdxftp import SDXFTP
+from app.processors.common_software_processor import CommonSoftwareProcessor
+from tests.test_data import common_software_survey
+
+ftpconn = SDXFTP("", "", "")
 
 
 class TestCommonSoftwareProcessor(unittest.TestCase):
 
     def setUp(self):
         survey = json.loads(common_software_survey)
-        self.processor = CommonSoftwareProcessor(logger, survey, ftpconn)
+        self.processor = CommonSoftwareProcessor(survey, ftpconn)
         self.processor.ftp.unzip_and_deliver = MagicMock(return_value=True)
 
     @staticmethod

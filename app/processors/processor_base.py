@@ -1,13 +1,14 @@
 from app import settings
 from app.helpers.request_helper import remote_call, response_ok, get_sequence_no
 from sdc.rabbit.exceptions import QuarantinableError, RetryableError
+from structlog import get_logger
 
 
 class Processor:
     """Base class calls transformer and passes results to ftp"""
 
-    def __init__(self, logger, survey, ftpconn, base_url, endpoint_name):
-        self.logger = logger
+    def __init__(self, survey, ftpconn, base_url, endpoint_name):
+        self.logger = get_logger()
         self.survey = survey
         self.tx_id = ""
         self._setup_logger()
@@ -18,7 +19,6 @@ class Processor:
     def process(self):
         """call transform and error if needed"""
         transformed = self._transform()
-
         delivered = self.ftp.unzip_and_deliver(settings.FTP_FOLDER, transformed)
 
         if not delivered:
@@ -36,8 +36,8 @@ class Processor:
         if response_ok(response) and response.content is not None:
             self.logger.info("{}:Successfully transformed".format(self.__class__.__name__))
             return response.content
-        else:
-            raise QuarantinableError("Response missing content")
+
+        raise QuarantinableError("Response missing content")
 
     def _get_url(self):
         """Gets the transformer url"""
