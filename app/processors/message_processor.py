@@ -3,6 +3,7 @@ from structlog import get_logger
 from app.helpers.request_helper import get_doc_from_store
 from app.processors.common_software_processor import CommonSoftwareProcessor
 from app.processors.cora_processor import CoraProcessor
+from app.processors.cord_processor import CordProcessor
 from app import settings
 from app.helpers.sdxftp import SDXFTP
 
@@ -12,6 +13,7 @@ class MessageProcessor:
         self.logger = get_logger()
         self._ftp = SDXFTP(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
         self.cora_surveys = settings.CORA_SURVEYS
+        self.cord_surveys = settings.CORD_SURVEYS
 
     def process(self, msg, tx_id):
 
@@ -36,5 +38,7 @@ class MessageProcessor:
 
         if document['survey_id'] in self.cora_surveys:
             return CoraProcessor(document, self._ftp)
+        if document['survey_id'] in self.cord_surveys:
+            return CordProcessor(document, self._ftp)
 
         return CommonSoftwareProcessor(document, self._ftp)
