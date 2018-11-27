@@ -9,14 +9,14 @@ from unittest.mock import MagicMock
 
 from app import settings
 from app.helpers.sdxftp import SDXFTP
-from app.processors.cora_processor import CoraProcessor
-from tests.test_data import cora_survey
+from app.processors.cord_processor import CordProcessor
+from tests.test_data import cord_survey
 from tests.processor_test_base import ProcessorTestBase
 
 ftpconn = SDXFTP("", "", "")
 
 
-class TestCoraProcessor(unittest.TestCase, ProcessorTestBase):
+class TestCordProcessor(unittest.TestCase, ProcessorTestBase):
 
     def setUp(self):
         logging.basicConfig(format=settings.LOGGING_FORMAT,
@@ -26,12 +26,12 @@ class TestCoraProcessor(unittest.TestCase, ProcessorTestBase):
         logging.getLogger('sdc.rabbit').setLevel(logging.INFO)
 
         structlog.configure(logger_factory=LoggerFactory(), context_class=wrap_dict(dict))
-        survey = json.loads(cora_survey)
-        self.processor = CoraProcessor(survey, ftpconn)
+        survey = json.loads(cord_survey)
+        self.processor = CordProcessor(survey, ftpconn)
         self.processor.ftp.unzip_and_deliver = MagicMock(return_value=True)
 
     def test_if_no_metadata_error_is_logged(self):
         survey = {"a key": "a value"}
         with self.assertLogs(level='ERROR') as cm:
-            self.processor = CoraProcessor(survey, ftpconn)
+            self.processor = CordProcessor(survey, ftpconn)
         self.assertIn("Failed to get metadata", cm[0][0].message)

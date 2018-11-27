@@ -65,3 +65,6 @@ SDX_TRANSFORM_CORA_URL = _get_value("SDX_TRANSFORM_CORA_URL", "http://sdx-transf
 SDX_SEQUENCE_URL = _get_value("SDX_SEQUENCE_URL", "http://sdx-sequence:5000")
 
 CORA_SURVEYS = ['144']
+
+# 187 - Ecommerce
+CORD_SURVEYS = ['187']

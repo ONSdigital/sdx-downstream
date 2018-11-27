@@ -1,4 +1,5 @@
 ### Unreleased
+  - Added processor to handle surveys that go to CORD (currently only e-commerce)
 
 ### 3.7.0 2018-11-13
   - Add tx_id to ftp log lines
