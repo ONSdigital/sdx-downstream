@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.8.0 2018-12-12
   - Added processor to handle surveys that go to CORD (currently only e-commerce)
 
 ### 3.7.0 2018-11-13
