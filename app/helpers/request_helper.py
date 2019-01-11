@@ -32,8 +32,10 @@ def service_name(url=None):
             return 'SDX_SEQUENCE'
         elif 'common-software' in parts:
             return 'SDX_TRANSFORM_CS'
+        elif 'cord' in parts:
+            return 'SDX_TRANSFORM_CS'
         elif 'cora' in parts:
-            return 'SDX_TRANSFORM_CORA'
+            return 'SDX_TRANSFORM_CS'
         else:
             return None
     except AttributeError:
