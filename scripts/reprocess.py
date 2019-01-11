@@ -19,6 +19,8 @@ if __name__ == "__main__":
         sys.exit("No tx_ids in file, exiting script")
 
     for tx_id in lines:
+        # Remove newline character at the end of the tx_id (if present)
+        tx_id = tx_id.rstrip()
         print("About to put {} on the queue".format(tx_id))
         try:
             publisher.publish_message(tx_id, headers={'tx_id': tx_id})
