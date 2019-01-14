@@ -1,6 +1,7 @@
 ### Unreleased
   - CORA submissions now go to sdx-transform-cs. sdx-transform-cs now handles transformations for all surveys as opposed
 to having separate services to handle different types.
+  - Fix newline bug in reprocessing script
 
 ### 3.8.0 2018-12-12
   - Added processor to handle surveys that go to CORD (currently only e-commerce)
