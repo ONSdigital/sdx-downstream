@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 3.9.0 2019-01-22
   - CORA submissions now go to sdx-transform-cs. sdx-transform-cs now handles transformations for all surveys as opposed
 to having separate services to handle different types.
   - Fix newline bug in reprocessing script
