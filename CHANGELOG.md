@@ -1,4 +1,5 @@
 ### Unreleased
+  - Fix security issue and update packages
 
 ### 3.9.0 2019-01-22
   - CORA submissions now go to sdx-transform-cs. sdx-transform-cs now handles transformations for all surveys as opposed
