@@ -91,4 +91,4 @@ class TestMessageProcessor(unittest.TestCase):
                 with self.assertLogs(level='INFO') as cm:
                     self.message_processor.process("0f534ffc-9442-414c-b39f-a756b4adc6cb", None)
 
-            self.assertIn("tx_id='0f534ffc-9442-414c-b39f-a756b4adc6cb'", cm[0][0].message)
+            self.assertIn("tx_id=0f534ffc-9442-414c-b39f-a756b4adc6cb", cm[0][0].message)
