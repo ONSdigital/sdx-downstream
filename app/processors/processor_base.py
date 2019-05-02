@@ -53,10 +53,6 @@ class Processor:
             except KeyError:
                 self.logger.error("Failed to get metadata")
 
-            if 'tx_id' in self.survey:
-                self.tx_id = self.survey['tx_id']
-                self.logger = self.logger.bind(tx_id=self.tx_id)
-
     @staticmethod
     def _get_sequence_number():
         """return the sequence number else raise a Retryable Error"""
