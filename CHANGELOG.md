@@ -1,4 +1,6 @@
 ### Unreleased
+  - Fix issue where the previous submissions values (tx_id, ru_ref, user_id) were still bound at the start of a new submission
+  - Upgrade urllib3 package to fix security issue
 
 ### 3.9.1 2019-02-19
   - Fix security issue and update packages

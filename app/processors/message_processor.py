@@ -16,7 +16,6 @@ class MessageProcessor:
         self.cord_surveys = settings.CORD_SURVEYS
 
     def process(self, msg, tx_id):
-
         if tx_id is None:
             tx_id = msg
 
@@ -30,6 +29,9 @@ class MessageProcessor:
             processor.process()
             processor.logger.info("Processed successfully")
 
+            # If we don't unbind these fields, their current value will be retained for the next
+            # submission.  This leads to incorrect values being logged out in the bound fields.
+            self.logger = self.logger.unbind("tx_id", "ru_ref", "user_id")
         except KeyError:
             self.logger.error("No survey ID in document")
 
