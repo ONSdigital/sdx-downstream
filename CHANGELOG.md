@@ -1,4 +1,6 @@
 ### Unreleased
+  - Remove python 3.4 and 3.5 from travis builds
+  - Add python 3.7 to travis builds
 
 ### 3.9.2 2019-05-14
   - Fix issue where the previous submissions values (tx_id, ru_ref, user_id) were still bound at the start of a new submission
