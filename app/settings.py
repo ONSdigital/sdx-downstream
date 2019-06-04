@@ -11,7 +11,7 @@ logger = wrap_logger(
     logging.getLogger(__name__)
 )
 
-HEARTBEAT_INTERVAL = "?heartbeat_interval=5"
+HEARTBEAT_INTERVAL = "?heartbeat=5"
 
 
 def _get_value(key, default_value=None):
