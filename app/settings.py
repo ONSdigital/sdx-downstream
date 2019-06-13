@@ -19,7 +19,7 @@ def _get_value(key, default_value=None):
     """
     value = os.getenv(key, default_value)
     if not value:
-        logger.error("No value set for {}".format(key))
+        logger.error(f"No value set for {key}")
         raise ValueError()
     return value
 
@@ -33,14 +33,12 @@ def parse_vcap_services():
 
 
 def parse_non_vcap_services():
-    rabbit_url = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
-        hostname=_get_value('RABBITMQ_HOST', 'rabbit'),
-        port=_get_value('RABBITMQ_PORT', 5672),
-        user=_get_value('RABBITMQ_DEFAULT_USER', 'rabbit'),
-        password=_get_value('RABBITMQ_DEFAULT_PASS', 'rabbit'),
-        vhost=_get_value('RABBITMQ_DEFAULT_VHOST', '%2f')
-    ) + HEARTBEAT_INTERVAL
-
+    hostname=_get_value('RABBITMQ_HOST', 'rabbit'),
+    port=_get_value('RABBITMQ_PORT', 5672),
+    user=_get_value('RABBITMQ_DEFAULT_USER', 'rabbit'),
+    password=_get_value('RABBITMQ_DEFAULT_PASS', 'rabbit'),
+    vhost=_get_value('RABBITMQ_DEFAULT_VHOST', '%2f')
+    rabbit_url = f'amqp://{user}:{password}@{hostname}:{port}/{vhost}{HEARTBEAT_INTERVAL}'
     return rabbit_url
 
 

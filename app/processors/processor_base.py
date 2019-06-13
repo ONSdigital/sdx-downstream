@@ -34,7 +34,7 @@ class Processor:
         response = remote_call(endpoint, json=self.survey)
 
         if response_ok(response) and response.content is not None:
-            self.logger.info("{}:Successfully transformed".format(self.__class__.__name__))
+            self.logger.info(f"{self.__class__.__name__}:Successfully transformed")
             return response.content
 
         raise QuarantinableError("Response missing content")
@@ -42,7 +42,7 @@ class Processor:
     def _get_url(self):
         """Gets the transformer url"""
         sequence_no = Processor._get_sequence_number()
-        return "{0}/{1}/{2}".format(self._base_url, self._endpoint_name, sequence_no)
+        return f"{self._base_url}/{self._endpoint_name}/{sequence_no}"
 
     def _setup_logger(self):
         """Sets up the logger"""

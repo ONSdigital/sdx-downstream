@@ -76,25 +76,25 @@ def response_ok(response):
                     status=response.status_code,
                     service=service,
                     )
-        raise QuarantinableError("Not Found response returned from {}".format(service))
+        raise QuarantinableError(f"Not Found response returned from {service}")
     elif 400 <= response.status_code < 500:
         logger.info("Bad Request response from service",
                     request_url=response.url,
                     status=response.status_code,
                     service=service,
                     )
-        raise QuarantinableError("Bad Request response from {}".format(service))
+        raise QuarantinableError(f"Bad Request response from {service}")
 
     logger.info("Bad response from service",
                 request_url=response.url,
                 status=response.status_code,
                 service=service,
                 )
-    raise RetryableError("Bad response from {}".format(service))
+    raise RetryableError(f"Bad response from {service}")
 
 
 def get_sequence_no():
-    sequence_url = "{0}/sequence".format(SDX_SEQUENCE_URL)
+    sequence_url = f"{SDX_SEQUENCE_URL}/sequence"
     response = remote_call(sequence_url)
 
     if response_ok(response):
@@ -103,7 +103,7 @@ def get_sequence_no():
 
 def get_doc_from_store(tx_id):
     logger.info("About to get document from store")
-    store_url = "{0}/responses/{1}".format(SDX_STORE_URL, tx_id)
+    store_url = f"{SDX_STORE_URL}/responses/{tx_id}"
     response = remote_call(store_url)
 
     if response_ok(response):
