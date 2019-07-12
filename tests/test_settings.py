@@ -32,8 +32,8 @@ class TestNoBatchTransformService(unittest.TestCase):
 
     def test_parse_vcap_services(self):
         rabbit_url = settings.parse_vcap_services()
-        self.assertEqual("amqp://user:password@168.0.0.1:5672/example_vhost?heartbeat=5", rabbit_url)
+        self.assertEqual("amqp://user:password@168.0.0.1:5672/example_vhost", rabbit_url)
 
     def test_parse_non_vcap_services(self):
         rabbit_url = settings.parse_non_vcap_services()
-        self.assertEqual('amqp://User:Password@Host:Port/VHost?heartbeat=5', rabbit_url)
+        self.assertEqual('amqp://User:Password@Host:Port/VHost', rabbit_url)
