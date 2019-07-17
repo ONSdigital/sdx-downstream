@@ -11,8 +11,6 @@ logger = wrap_logger(
     logging.getLogger(__name__)
 )
 
-HEARTBEAT_INTERVAL = "?heartbeat=5"
-
 
 def _get_value(key, default_value=None):
     """Gets a value from an environment variable , will use default if present else raise a value Error
@@ -28,7 +26,7 @@ def parse_vcap_services():
     vcap_services = _get_value("VCAP_SERVICES")
     parsed_vcap_services = json.loads(vcap_services)
     rabbit_config = parsed_vcap_services.get('rabbitmq')
-    rabbit_url = rabbit_config[0].get('credentials').get('uri') + HEARTBEAT_INTERVAL
+    rabbit_url = rabbit_config[0].get('credentials').get('uri')
     return rabbit_url
 
 
@@ -39,7 +37,7 @@ def parse_non_vcap_services():
         user=_get_value('RABBITMQ_DEFAULT_USER', 'rabbit'),
         password=_get_value('RABBITMQ_DEFAULT_PASS', 'rabbit'),
         vhost=_get_value('RABBITMQ_DEFAULT_VHOST', '%2f')
-    ) + HEARTBEAT_INTERVAL
+    )
 
     return rabbit_url
 
