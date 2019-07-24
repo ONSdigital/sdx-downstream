@@ -17,7 +17,7 @@ def _get_value(key, default_value=None):
     """
     value = os.getenv(key, default_value)
     if not value:
-        logger.error("No value set for {}".format(key))
+        logger.error(f"No value set for {key}")
         raise ValueError()
     return value
 
@@ -59,7 +59,6 @@ FTP_FOLDER = '/'
 
 SDX_STORE_URL = _get_value("SDX_STORE_URL", "http://sdx-store:5000")
 SDX_TRANSFORM_CS_URL = _get_value("SDX_TRANSFORM_CS_URL", "http://sdx-transform-cs:5000")
-SDX_TRANSFORM_CORA_URL = _get_value("SDX_TRANSFORM_CORA_URL", "http://sdx-transform-cora:5000")
 SDX_SEQUENCE_URL = _get_value("SDX_SEQUENCE_URL", "http://sdx-sequence:5000")
 
 CORA_SURVEYS = ['144']

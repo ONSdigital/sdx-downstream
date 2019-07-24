@@ -21,7 +21,7 @@ if __name__ == "__main__":
     for tx_id in lines:
         # Remove newline character at the end of the tx_id (if present)
         tx_id = tx_id.rstrip()
-        print("About to put {} on the queue".format(tx_id))
+        print(f"About to put {tx_id} on the queue")
         try:
             publisher.publish_message(tx_id, headers={'tx_id': tx_id})
         except PublishMessageError as e:

@@ -11,7 +11,6 @@ applications:
     CF_DEPLOYMENT: True
     SDX_STORE_URL: http://sdx-store-SPACE.apps.devtest.onsclofo.uk
     SDX_TRANSFORM_CS_URL: http://sdx-transform-cs-SPACE.apps.devtest.onsclofo.uk
-    SDX_TRANSFORM_CORA_URL: http://sdx-transform-cora-SPACE.apps.devtest.onsclofo.uk
     SDX_SEQUENCE_URL:  http://sdx-sequence-SPACE.apps.devtest.onsclofo.uk
     FTP_HOST: FTPHOST
     FTP_USER: FTPUSER
