@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 
 from app import settings
 from app.helpers.sdxftp import SDXFTP
-from app.processors.cord_processor import CordProcessor
+from app.processors.transform_processor import TransformProcessor
 from tests.test_data import cord_survey
 from tests.processor_test_base import ProcessorTestBase
 
@@ -27,11 +27,11 @@ class TestCordProcessor(unittest.TestCase, ProcessorTestBase):
 
         structlog.configure(logger_factory=LoggerFactory(), context_class=wrap_dict(dict))
         survey = json.loads(cord_survey)
-        self.processor = CordProcessor(survey, ftpconn)
+        self.processor = TransformProcessor(survey, ftpconn)
         self.processor.ftp.unzip_and_deliver = MagicMock(return_value=True)
 
     def test_if_no_metadata_error_is_logged(self):
-        survey = {"a key": "a value"}
+        survey = {"a key": "a value", "survey_id": "a survey id"}
         with self.assertLogs(level='ERROR') as cm:
-            self.processor = CordProcessor(survey, ftpconn)
+            self.processor = TransformProcessor(survey, ftpconn)
         self.assertIn("Failed to get metadata", cm[0][0].message)

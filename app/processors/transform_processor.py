@@ -4,17 +4,26 @@ from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 from structlog import get_logger
 
 
-class Processor:
-    """Base class calls transformer and passes results to ftp"""
+class TransformProcessor:
+    """Transforms and passes results to ftp"""
 
-    def __init__(self, survey, ftpconn, base_url, endpoint_name):
-        self.logger = get_logger()
+    def __init__(self, survey, ftp_conn):
+        """
+           survey: survey document
+           ftp_conn: ftp connection , passed in for testing purposes
+        """
+        self._base_url = settings.SDX_TRANSFORM_CS_URL
+        self.cora_surveys = settings.CORA_SURVEYS
+        self.cord_surveys = settings.CORD_SURVEYS
+
         self.survey = survey
         self.tx_id = ""
+
+        self.logger = get_logger()
         self._setup_logger()
-        self.ftp = ftpconn
-        self._base_url = base_url
-        self._endpoint_name = endpoint_name
+
+        self.ftp = ftp_conn
+        self._endpoint_name = self._get_transformer_endpoint_name(survey)
 
     def process(self):
         """call transform and error if needed"""
@@ -41,7 +50,7 @@ class Processor:
 
     def _get_url(self):
         """Gets the transformer url"""
-        sequence_no = Processor._get_sequence_number()
+        sequence_no = TransformProcessor._get_sequence_number()
         return f"{self._base_url}/{self._endpoint_name}/{sequence_no}"
 
     def _setup_logger(self):
@@ -60,3 +69,13 @@ class Processor:
         if sequence_no is None:
             raise RetryableError("Failed to get sequence number")
         return sequence_no
+
+    def _get_transformer_endpoint_name(self, survey):
+        """Returns the end point name based on the survey_id in the survey document"""
+
+        if survey['survey_id'] in self.cora_surveys:
+            return 'cora'
+        if survey['survey_id'] in self.cord_surveys:
+            return 'cord'
+
+        return 'common-software'
