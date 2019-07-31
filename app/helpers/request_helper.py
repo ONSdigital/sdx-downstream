@@ -30,11 +30,7 @@ def service_name(url=None):
             return 'SDX_STORE'
         elif 'sequence' in parts:
             return 'SDX_SEQUENCE'
-        elif 'common-software' in parts:
-            return 'SDX_TRANSFORM_CS'
-        elif 'cord' in parts:
-            return 'SDX_TRANSFORM_CS'
-        elif 'cora' in parts:
+        elif 'common-software' in parts or 'cord' in parts or 'cora' in parts:  # easier to read than any()
             return 'SDX_TRANSFORM_CS'
         else:
             return None
@@ -47,14 +43,11 @@ def remote_call(url, json=None):
 
     try:
         logger.info("Calling service", request_url=url, service=service)
-        response = None
 
         if json:
-            response = session.post(url, json=json)
-        else:
-            response = session.get(url)
+            return session.post(url, json=json)
 
-        return response
+        return session.get(url)
 
     except MaxRetryError:
         logger.error("Max retries exceeded", request_url=url)
@@ -76,25 +69,25 @@ def response_ok(response):
                     status=response.status_code,
                     service=service,
                     )
-        raise QuarantinableError("Not Found response returned from {}".format(service))
+        raise QuarantinableError(f"Not Found response returned from {service}")
     elif 400 <= response.status_code < 500:
         logger.info("Bad Request response from service",
                     request_url=response.url,
                     status=response.status_code,
                     service=service,
                     )
-        raise QuarantinableError("Bad Request response from {}".format(service))
+        raise QuarantinableError(f"Bad Request response from {service}")
 
     logger.info("Bad response from service",
                 request_url=response.url,
                 status=response.status_code,
                 service=service,
                 )
-    raise RetryableError("Bad response from {}".format(service))
+    raise RetryableError(f"Bad response from {service}")
 
 
 def get_sequence_no():
-    sequence_url = "{0}/sequence".format(SDX_SEQUENCE_URL)
+    sequence_url = f"{SDX_SEQUENCE_URL}/sequence"
     response = remote_call(sequence_url)
 
     if response_ok(response):
@@ -103,7 +96,7 @@ def get_sequence_no():
 
 def get_doc_from_store(tx_id):
     logger.info("About to get document from store")
-    store_url = "{0}/responses/{1}".format(SDX_STORE_URL, tx_id)
+    store_url = f"{SDX_STORE_URL}/responses/{tx_id}"
     response = remote_call(store_url)
 
     if response_ok(response):

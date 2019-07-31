@@ -6,6 +6,7 @@ from unittest.mock import MagicMock
 
 from app.helpers.sdxftp import SDXFTP
 
+
 ftpconn = SDXFTP("", "", "")
 
 
@@ -19,11 +20,11 @@ class ProcessorTestBase:  # pylint: disable=no-member
         return response
 
     def test_transform(self):
-        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.transform_processor.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
             response = self._get_response()
 
-            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
+            with mock.patch('app.processors.transform_processor.remote_call') as call_mock:
 
                 # 500 something ary
                 response.status_code = 500
@@ -49,10 +50,10 @@ class ProcessorTestBase:  # pylint: disable=no-member
                     self.processor.process()
 
     def test_sequence(self):
-        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.transform_processor.get_sequence_no') as seq_mock:
 
             response = self._get_response()
-            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
+            with mock.patch('app.processors.transform_processor.remote_call') as call_mock:
                 call_mock.return_value = response
 
                 # Good return
@@ -65,11 +66,11 @@ class ProcessorTestBase:  # pylint: disable=no-member
                     self.processor.process()
 
     def test_ftp(self):
-        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.transform_processor.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
 
             response = self._get_response()
-            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
+            with mock.patch('app.processors.transform_processor.remote_call') as call_mock:
                 call_mock.return_value = response
 
                 # Good deliver

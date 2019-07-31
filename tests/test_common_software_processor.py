@@ -7,7 +7,7 @@ from requests import Response
 from sdc.rabbit.exceptions import QuarantinableError, RetryableError
 
 from app.helpers.sdxftp import SDXFTP
-from app.processors.common_software_processor import CommonSoftwareProcessor
+from app.processors.transform_processor import TransformProcessor
 from tests.test_data import common_software_survey
 
 ftpconn = SDXFTP("", "", "")
@@ -17,7 +17,7 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
 
     def setUp(self):
         survey = json.loads(common_software_survey)
-        self.processor = CommonSoftwareProcessor(survey, ftpconn)
+        self.processor = TransformProcessor(survey, ftpconn)
         self.processor.ftp.unzip_and_deliver = MagicMock(return_value=True)
 
     @staticmethod
@@ -28,11 +28,11 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
         return response
 
     def test_transform(self):
-        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.transform_processor.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
             response = self._get_response()
 
-            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
+            with mock.patch('app.processors.transform_processor.remote_call') as call_mock:
 
                 # 500 something ary
                 response.status_code = 500
@@ -58,10 +58,10 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
                     self.processor.process()
 
     def test_sequence(self):
-        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.transform_processor.get_sequence_no') as seq_mock:
 
             response = self._get_response()
-            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
+            with mock.patch('app.processors.transform_processor.remote_call') as call_mock:
                 call_mock.return_value = response
 
                 # Good return
@@ -74,11 +74,11 @@ class TestCommonSoftwareProcessor(unittest.TestCase):
                     self.processor.process()
 
     def test_ftp(self):
-        with mock.patch('app.processors.processor_base.get_sequence_no') as seq_mock:
+        with mock.patch('app.processors.transform_processor.get_sequence_no') as seq_mock:
             seq_mock.return_value = '1001'
 
             response = self._get_response()
-            with mock.patch('app.processors.processor_base.remote_call') as call_mock:
+            with mock.patch('app.processors.transform_processor.remote_call') as call_mock:
                 call_mock.return_value = response
 
                 # Good deliver

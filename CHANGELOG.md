@@ -1,6 +1,5 @@
 ### Unreleased
-
-### Unreleased 
+  - removed reference to transform_cora service
   - Reverted to default heartbeat
 
 ### 3.10.0 2019-06-20

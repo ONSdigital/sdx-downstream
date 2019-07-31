@@ -9,8 +9,6 @@ from structlog.threadlocal import wrap_dict
 
 from app import settings
 from app.processors.message_processor import MessageProcessor
-from app.processors.cora_processor import CoraProcessor
-from app.processors.common_software_processor import CommonSoftwareProcessor
 from tests.test_data import common_software_survey, cora_survey
 
 
@@ -30,7 +28,7 @@ class TestMessageProcessor(unittest.TestCase):
 
         with mock.patch('app.processors.message_processor.get_doc_from_store') as get_doc_mock:
             get_doc_mock.return_value = json.loads(common_software_survey)
-            with mock.patch('app.processors.processor_base.Processor.process') as csp_mock:
+            with mock.patch('app.processors.transform_processor.TransformProcessor.process') as csp_mock:
                 with self.assertLogs(level='INFO') as cm:
 
                     csp_mock.return_value = None
@@ -45,7 +43,7 @@ class TestMessageProcessor(unittest.TestCase):
 
         with mock.patch('app.processors.message_processor.get_doc_from_store') as get_doc_mock:
             get_doc_mock.return_value = json.loads(cora_survey)
-            with mock.patch('app.processors.processor_base.Processor.process') as cora_mock:
+            with mock.patch('app.processors.transform_processor.TransformProcessor.process') as cora_mock:
                 with self.assertLogs(level='INFO') as cm:
 
                     cora_mock.return_value = None
@@ -56,23 +54,11 @@ class TestMessageProcessor(unittest.TestCase):
             self.assertIn("Received message", cm[0][0].message)
             self.assertIn("Processed successfully", cm[0][1].message)
 
-    def test_message_processor_selects_cora_for_cora_surveys(self):
-        response_data = json.loads(cora_survey)
-        processor = self.message_processor._get_processor(response_data)
-
-        self.assertIsInstance(processor, CoraProcessor)
-
-    def test_message_processor_selects_common_software_for_common_software_surveys(self):
-        response_data = json.loads(common_software_survey)
-        processor = self.message_processor._get_processor(response_data)
-
-        self.assertIsInstance(processor, CommonSoftwareProcessor)
-
     def test_message_processor_logs_error_if_KeyError_raised(self):
 
         with mock.patch('app.processors.message_processor.get_doc_from_store') as get_doc_mock:
             get_doc_mock.return_value = json.loads(cora_survey)
-            with mock.patch('app.processors.processor_base.Processor.process') as cora_mock:
+            with mock.patch('app.processors.transform_processor.TransformProcessor.process') as cora_mock:
                 with self.assertLogs(level='INFO') as cm:
 
                     cora_mock.side_effect = KeyError
@@ -87,7 +73,7 @@ class TestMessageProcessor(unittest.TestCase):
 
         with mock.patch('app.processors.message_processor.get_doc_from_store') as get_doc_mock:
             get_doc_mock.return_value = json.loads(cora_survey)
-            with mock.patch('app.processors.processor_base.Processor.process'):
+            with mock.patch('app.processors.transform_processor.TransformProcessor.process'):
                 with self.assertLogs(level='INFO') as cm:
                     self.message_processor.process("0f534ffc-9442-414c-b39f-a756b4adc6cb", None)
 
