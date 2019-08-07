@@ -48,7 +48,7 @@ else:
     RABBIT_URL = parse_non_vcap_services()
 
 RABBIT_URLS = [RABBIT_URL]
-RABBIT_QUEUE = 'sdx-survey-notification-durable'
+RABBIT_QUEUE = 'sdx_downstream'
 RABBIT_EXCHANGE = 'message'
 RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'sdx-downstream-quarantine')
 
