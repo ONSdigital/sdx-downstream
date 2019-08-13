@@ -1,9 +1,11 @@
 ### Unreleased
 
+### 3.12.0 2019-08-13
+  - Changed name of the SDX Collect Rabbit queue
+
 ### 3.11.0 2019-08-1
   - removed reference to transform_cora service
   - Reverted to default heartbeat
-  - Changed name of the SDX Collect Rabbit queue
 
 ### 3.10.0 2019-06-20
   - Remove python 3.4 and 3.5 from travis builds
