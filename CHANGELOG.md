@@ -1,4 +1,6 @@
 ### Unreleased
+  - Update sdc-rabbit to 1.7.0 to fix reconnection issues
+  - Update various dependencies
 
 ### 3.12.0 2019-08-13
   - Changed name of the SDX Collect Rabbit queue
