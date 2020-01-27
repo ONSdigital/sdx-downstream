@@ -1,6 +1,6 @@
 ### Unreleased
 
-### 3.13.1
+### 3.13.1 2020-01-27
   - Add python 3.8 to travis builds
   - Update structlog to 19.2.0 to support python 3.8
 
