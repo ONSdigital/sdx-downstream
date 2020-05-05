@@ -1,4 +1,5 @@
 ### Unreleased
+  - Remove Cloudfoundry deployment files
 
 ### 3.13.1 2020-01-27
   - Add python 3.8 to travis builds

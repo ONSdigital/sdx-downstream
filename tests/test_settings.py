@@ -5,8 +5,6 @@ import unittest
 
 class TestNoBatchTransformService(unittest.TestCase):
     def setUp(self):
-        with open("./tests/vcap_example.json") as fp:
-            os.environ['VCAP_SERVICES'] = fp.read()
         os.environ["SDX_SEQUENCE_URL"] = "SomeUrl"
         os.environ["RABBITMQ_HOST"] = "Host"
         os.environ['RABBITMQ_PORT'] = "Port"
@@ -29,11 +27,3 @@ class TestNoBatchTransformService(unittest.TestCase):
     def test_get_raises_ValueError_if_empty_string_set_as_default(self):
         with self.assertRaises(ValueError):
             settings._get_value("SOME_UNKNOWN_ENV", "")
-
-    def test_parse_vcap_services(self):
-        rabbit_url = settings.parse_vcap_services()
-        self.assertEqual("amqp://user:password@168.0.0.1:5672/example_vhost", rabbit_url)
-
-    def test_parse_non_vcap_services(self):
-        rabbit_url = settings.parse_non_vcap_services()
-        self.assertEqual('amqp://User:Password@Host:Port/VHost', rabbit_url)
