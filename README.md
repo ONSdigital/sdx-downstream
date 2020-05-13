@@ -43,3 +43,5 @@ sdx-downstream works as a single consumer which exposes no endpoints. The best w
 Copyright (c) 2016 Crown Copyright (Office for National Statistics)
 
 Released under MIT license, see [LICENSE](LICENSE) for details.
+
+python3.8
