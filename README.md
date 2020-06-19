@@ -5,18 +5,30 @@
 The sdx-downstream app is used within the Office for National Statistics (ONS) for consuming decrypted Survey Data Exchange (SDX) Surveys from sdx-store and delivering them to downstream environments e.g. Common Software.
 
 ## Installation
+This application presently installs required packages from requirements files:
+- `requirements.txt`: packages for the application, with hashes for all packages: see https://pypi.org/project/hashin/
+- `test-requirements.txt`: packages for testing and linting
 
-Using virtualenv and pip, create a new environment and install within using:
+It's also best to use `pyenv` and `pyenv-virtualenv`, to build in a virtual environment with the currently recommended version of Python.  To install these, see:
+- https://github.com/pyenv/pyenv
+- https://github.com/pyenv/pyenv-virtualenv
+- (Note that the homebrew version of `pyenv` is easiest to install, but can lag behind the latest release of Python.)
 
-    $ pip install -r requirements.txt
+### Getting started
+Once your virtual environment is set, install the requirements:
+```shell
+$ make build
+```
 
-To run the tests, also install the test dependencies into a virtualenv using:
-
-    $ pip install -r test_requirements.txt
+To test, first run `make build` as above, then run:
+```shell
+$ make test
+```
 
 It's also possible to install within a container using docker. From the sdx-downstream directory:
-
-    $ docker build -t sdx-downstream .
+```shell
+$ docker build -t sdx-downstream .
+```
 
 ## Configuration
 
