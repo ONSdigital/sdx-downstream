@@ -40,6 +40,3 @@ FTP_FOLDER = '/'
 SDX_STORE_URL = _get_value("SDX_STORE_URL", "http://sdx-store:5000")
 SDX_TRANSFORM_CS_URL = _get_value("SDX_TRANSFORM_CS_URL", "http://sdx-transform-cs:5000")
 SDX_SEQUENCE_URL = _get_value("SDX_SEQUENCE_URL", "http://sdx-sequence:5000")
-
-CORA_SURVEYS = ['144']
-CORD_SURVEYS = ['187']  # E-commerce
