@@ -15,18 +15,18 @@ class TestTransformProcessor(unittest.TestCase):
 
         sut = TransformProcessor(survey, ftpconn)
 
-        self.assertEqual(sut._endpoint_name, 'cora')
+        self.assertEqual(sut._endpoint_name, 'transform')
 
     def test_cora_endpoint_selected_for_cord_survey(self):
         survey = json.loads(cord_survey)
 
         sut = TransformProcessor(survey, ftpconn)
 
-        self.assertEqual(sut._endpoint_name, 'cord')
+        self.assertEqual(sut._endpoint_name, 'transform')
 
     def test_cora_endpoint_selected_for_common_software_survey(self):
         survey = json.loads(common_software_survey)
 
         sut = TransformProcessor(survey, ftpconn)
 
-        self.assertEqual(sut._endpoint_name, 'common-software')
+        self.assertEqual(sut._endpoint_name, 'transform')

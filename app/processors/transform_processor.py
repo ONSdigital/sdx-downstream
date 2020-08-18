@@ -13,8 +13,6 @@ class TransformProcessor:
            ftp_conn: ftp connection , passed in for testing purposes
         """
         self._base_url = settings.SDX_TRANSFORM_CS_URL
-        self.cora_surveys = settings.CORA_SURVEYS
-        self.cord_surveys = settings.CORD_SURVEYS
 
         self.survey = survey
         self.tx_id = ""
@@ -23,7 +21,7 @@ class TransformProcessor:
         self._setup_logger()
 
         self.ftp = ftp_conn
-        self._endpoint_name = self._get_transformer_endpoint_name(survey)
+        self._endpoint_name = self._get_transformer_endpoint_name()
 
     def process(self):
         """call transform and error if needed"""
@@ -70,12 +68,7 @@ class TransformProcessor:
             raise RetryableError("Failed to get sequence number")
         return sequence_no
 
-    def _get_transformer_endpoint_name(self, survey):
-        """Returns the end point name based on the survey_id in the survey document"""
-
-        if survey['survey_id'] in self.cora_surveys:
-            return 'cora'
-        if survey['survey_id'] in self.cord_surveys:
-            return 'cord'
-
-        return 'common-software'
+    @staticmethod
+    def _get_transformer_endpoint_name():
+        """Returns the end point name"""
+        return 'transform'
