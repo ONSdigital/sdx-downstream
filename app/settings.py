@@ -36,6 +36,7 @@ FTP_HOST = _get_value('FTP_HOST', 'pure-ftpd')
 FTP_USER = os.getenv('FTP_USER')
 FTP_PASS = os.getenv('FTP_PASS')
 FTP_FOLDER = '/'
+FTP_FEEDBACK_FOLDER = '/EDC_QFeedback'
 
 SDX_STORE_URL = _get_value("SDX_STORE_URL", "http://sdx-store:5000")
 SDX_TRANSFORM_CS_URL = _get_value("SDX_TRANSFORM_CS_URL", "http://sdx-transform-cs:5000")

@@ -12,6 +12,10 @@ from app.processors.message_processor import MessageProcessor
 from tests.test_data import common_software_survey, cora_survey
 
 
+id_tag = '{"tx_id":"0f534ffc-9442-414c-b39f-a756b4adc6cb","is_feedback":false}'
+tx_id = "0f534ffc-9442-414c-b39f-a756b4adc6cb"
+
+
 class TestMessageProcessor(unittest.TestCase):
 
     def setUp(self):
@@ -33,8 +37,7 @@ class TestMessageProcessor(unittest.TestCase):
 
                     csp_mock.return_value = None
 
-                    self.message_processor.process("0f534ffc-9442-414c-b39f-a756b4adc6cb",
-                                                   "0f534ffc-9442-414c-b39f-a756b4adc6cb")
+                    self.message_processor.process(id_tag, tx_id)
 
             self.assertIn("Received message", cm[0][0].message)
             self.assertIn("Processed successfully", cm[0][1].message)
@@ -48,8 +51,7 @@ class TestMessageProcessor(unittest.TestCase):
 
                     cora_mock.return_value = None
 
-                    self.message_processor.process("0f534ffc-9442-414c-b39f-a756b4adc6cb",
-                                                   "0f534ffc-9442-414c-b39f-a756b4adc6cb")
+                    self.message_processor.process(id_tag, tx_id)
 
             self.assertIn("Received message", cm[0][0].message)
             self.assertIn("Processed successfully", cm[0][1].message)
@@ -63,8 +65,7 @@ class TestMessageProcessor(unittest.TestCase):
 
                     cora_mock.side_effect = KeyError
 
-                    self.message_processor.process("0f534ffc-9442-414c-b39f-a756b4adc6cb",
-                                                   "0f534ffc-9442-414c-b39f-a756b4adc6cb")
+                    self.message_processor.process(id_tag, tx_id)
 
             self.assertIn("Received message", cm[0][0].message)
             self.assertIn("No survey ID in document", cm[0][1].message)
@@ -75,6 +76,6 @@ class TestMessageProcessor(unittest.TestCase):
             get_doc_mock.return_value = json.loads(cora_survey)
             with mock.patch('app.processors.transform_processor.TransformProcessor.process'):
                 with self.assertLogs(level='INFO') as cm:
-                    self.message_processor.process("0f534ffc-9442-414c-b39f-a756b4adc6cb", None)
+                    self.message_processor.process(id_tag, None)
 
             self.assertIn("tx_id=0f534ffc-9442-414c-b39f-a756b4adc6cb", cm[0][0].message)
