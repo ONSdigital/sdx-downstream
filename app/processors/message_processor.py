@@ -27,8 +27,9 @@ class MessageProcessor:
             if id_tag.get('is_feedback'):
                 feedback_id = id_tag.get('feedback_id')
                 document = get_feedback_from_store(feedback_id)
+                data = json.dumps(document).encode('utf-8')
                 filename = 'feedback_{}'.format(feedback_id)
-                self.ftp.deliver_binary(settings.FTP_FEEDBACK_FOLDER, filename, document)
+                self.ftp.deliver_binary(settings.FTP_FEEDBACK_FOLDER, filename, data)
             else:
                 document = get_doc_from_store(tx_id)
                 transform_processor = TransformProcessor(document, self.ftp)
