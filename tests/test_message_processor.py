@@ -9,11 +9,13 @@ from structlog.threadlocal import wrap_dict
 
 from app import settings
 from app.processors.message_processor import MessageProcessor
-from tests.test_data import common_software_survey, cora_survey
+from tests.test_data import common_software_survey, cora_survey, feedback_decrypted
 
 
 id_tag = '{"tx_id":"0f534ffc-9442-414c-b39f-a756b4adc6cb","is_feedback":false}'
+feedback_id_tag = '{"tx_id": "0f534ffc-9442-414c-b39f-a756b4adc6cb","is_feedback":true,"feedback_id":123}'
 tx_id = "0f534ffc-9442-414c-b39f-a756b4adc6cb"
+feedback = json.loads(feedback_decrypted)
 
 
 class TestMessageProcessor(unittest.TestCase):
@@ -79,3 +81,13 @@ class TestMessageProcessor(unittest.TestCase):
                     self.message_processor.process(id_tag, None)
 
             self.assertIn("tx_id=0f534ffc-9442-414c-b39f-a756b4adc6cb", cm[0][0].message)
+
+    def test_message_processor_getting_feedback(self):
+
+        with mock.patch('app.processors.message_processor.get_feedback_from_store') as get_feedback_mock:
+            get_feedback_mock.return_value = json.loads(feedback_decrypted)
+            # with mock.patch('app.processors.transform_processor.TransformProcessor.process'):
+            with self.assertLogs(level='INFO') as cm:
+                self.message_processor.process(feedback_id_tag, None)
+
+            self.assertIn('"feedback_id":123', cm[0][2].message)
