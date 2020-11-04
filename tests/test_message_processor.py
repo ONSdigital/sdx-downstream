@@ -86,8 +86,9 @@ class TestMessageProcessor(unittest.TestCase):
 
         with mock.patch('app.processors.message_processor.get_feedback_from_store') as get_feedback_mock:
             get_feedback_mock.return_value = json.loads(feedback_decrypted)
-            # with mock.patch('app.processors.transform_processor.TransformProcessor.process'):
-            with self.assertLogs(level='INFO') as cm:
-                self.message_processor.process(feedback_id_tag, None)
+            with mock.patch('app.helpers.sdxftp.SDXFTP.deliver_binary'):
+                with self.assertLogs(level='INFO') as cm:
+                    self.message_processor.process(feedback_id_tag, None)
 
-            self.assertIn('"feedback_id":123', cm[0][2].message)
+            self.assertIn("Received message", cm[0][0].message)
+            self.assertIn("Processed successfully", cm[0][1].message)
