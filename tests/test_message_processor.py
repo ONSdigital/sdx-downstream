@@ -82,13 +82,51 @@ class TestMessageProcessor(unittest.TestCase):
 
             self.assertIn("tx_id=0f534ffc-9442-414c-b39f-a756b4adc6cb", cm[0][0].message)
 
-    def test_message_processor_getting_feedback(self):
+    def test_message_processor_logging_feedback(self):
+
+        with mock.patch('app.processors.message_processor.get_feedback_from_store') as get_feedback_mock:
+            get_feedback_mock.return_value = json.loads(feedback_decrypted)
+            with mock.patch('app.helpers.sdxftp.SDXFTP.deliver_binary'):
+                with self.assertLogs(level='INFO') as cm:
+                    self.message_processor.process(feedback_id_tag, tx_id)
+
+            self.assertIn("Received message", cm[0][0].message)
+            self.assertIn("Processed successfully", cm[0][1].message)
+
+    def test_msg_is_used_if_tx_id_is_none_feedback(self):
 
         with mock.patch('app.processors.message_processor.get_feedback_from_store') as get_feedback_mock:
             get_feedback_mock.return_value = json.loads(feedback_decrypted)
             with mock.patch('app.helpers.sdxftp.SDXFTP.deliver_binary'):
                 with self.assertLogs(level='INFO') as cm:
                     self.message_processor.process(feedback_id_tag, None)
+
+            self.assertIn("tx_id=0f534ffc-9442-414c-b39f-a756b4adc6cb", cm[0][0].message)
+
+    def test_message_processor_feedback_logs_error_if_KeyError_raised(self):
+
+        with mock.patch('app.processors.message_processor.get_feedback_from_store') as get_feedback_mock:
+            get_feedback_mock.return_value = json.loads(feedback_decrypted)
+            with mock.patch('app.helpers.sdxftp.SDXFTP.deliver_binary') as feedback_mock:
+                with self.assertLogs(level='INFO') as cm:
+
+                    feedback_mock.side_effect = KeyError
+
+                    self.message_processor.process(feedback_id_tag, tx_id)
+
+            self.assertIn("Received message", cm[0][0].message)
+            self.assertIn("No survey ID in document", cm[0][1].message)
+
+    def test_message_processor_feedback_logging_common_software(self):
+
+        with mock.patch('app.processors.message_processor.get_feedback_from_store') as get_feedback_mock:
+            get_feedback_mock.return_value = json.loads(feedback_decrypted)
+            with mock.patch('app.helpers.sdxftp.SDXFTP.deliver_binary') as csp_mock:
+                with self.assertLogs(level='INFO') as cm:
+
+                    csp_mock.return_value = None
+
+                    self.message_processor.process(feedback_id_tag, tx_id)
 
             self.assertIn("Received message", cm[0][0].message)
             self.assertIn("Processed successfully", cm[0][1].message)
