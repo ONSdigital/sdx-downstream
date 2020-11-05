@@ -1,5 +1,7 @@
 ### Unreleased
-
+ - Methods to get feedback from store
+ - Tests for feedback automation
+ 
 ### 3.14.0 2020-09-07
   - All surveys call 'transform' endpoint
 
