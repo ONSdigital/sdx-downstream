@@ -15,20 +15,20 @@ class MessageProcessor:
         self.ftp = SDXFTP(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
 
     def process(self, msg, tx_id):
-        id_tag = json.loads(msg)
+        id = json.loads(msg)
         if tx_id is None:
-            tx_id = id_tag.get('tx_id')
+            tx_id = id.get('tx_id')
 
         self.logger = self.logger.bind(tx_id=tx_id)
         self.logger.info('Received message')
 
         try:
 
-            if id_tag.get('is_feedback'):
-                feedback_id = id_tag.get('feedback_id')
+            if id.get('feedback'):
+                feedback_id = id.get('feedback_id')
                 document = get_feedback_from_store(feedback_id)
                 data = json.dumps(document).encode('utf-8')
-                filename = 'feedback_{}'.format(feedback_id)
+                filename = f'feedback_{feedback_id}'
                 self.ftp.deliver_binary(settings.FTP_FEEDBACK_FOLDER, filename, data)
             else:
                 document = get_doc_from_store(tx_id)

@@ -105,10 +105,10 @@ def get_doc_from_store(tx_id):
 
 
 def get_feedback_from_store(feedback_id):
-    logger.info("About to get feedback from store")
+    logger.info("About to get feedback from store", id=feedback_id)
     store_url = f"{SDX_STORE_URL}/feedback/{feedback_id}"
     response = remote_call(store_url)
 
     if response_ok(response):
-        logger.info("Successfully got feedback from store")
+        logger.info("Successfully got feedback from store", id=feedback_id)
         return response.json()
