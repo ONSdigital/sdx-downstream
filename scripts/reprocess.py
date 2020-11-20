@@ -21,9 +21,10 @@ if __name__ == "__main__":
     for tx_id in lines:
         # Remove newline character at the end of the tx_id (if present)
         tx_id = tx_id.rstrip()
+        store_response_json = f'{{"tx_id": "{tx_id}","feedback":False}}'
         print(f"About to put {tx_id} on the queue")
         try:
-            publisher.publish_message(tx_id, headers={'tx_id': tx_id})
+            publisher.publish_message(store_response_json, headers={'tx_id': tx_id})
         except PublishMessageError as e:
             print(e)
             raise
